@@ -1,4 +1,4 @@
-package json.parse
+package yy.json.parse
 
 /**
   * Created by Administrator on 2017/7/5.

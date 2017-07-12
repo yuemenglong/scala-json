@@ -1,4 +1,4 @@
-package json.parse
+package yy.json.parse
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
@@ -56,7 +56,6 @@ object Parser {
   }
 
   def parseObj(json: String, start: Int): (JsonNode, Int) = {
-    println("parseObj", start)
     var pos = start + 1
     var state = "name" // colon value dot finish
     var map = Map[String, JsonNode]()

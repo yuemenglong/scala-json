@@ -1,4 +1,4 @@
-package json.kit
+package yy.json.kit
 
 import java.lang.reflect.{Field, ParameterizedType}
 

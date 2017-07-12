@@ -1,4 +1,5 @@
 .idea/
 out/
-scala-json.iml
+scala-yy.json.iml
 target
+scala-json.iml

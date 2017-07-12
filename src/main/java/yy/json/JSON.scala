@@ -1,6 +1,6 @@
-package json
+package yy.json
 
-import json.parse.{JsonNode, Parser}
+import yy.json.parse.{JsonNode, Parser}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -13,11 +13,11 @@ object JSON {
 
   def constructorMap = Map[String, () => Any]()
 
-  //  def parse[T](json: String, clazz: Class[_]): T = {
+  //  def parse[T](yy.json: String, clazz: Class[_]): T = {
   //    val isArray = clazz.isAssignableFrom(classOf[Array[_]])
-  //    (json(0), json.last, isArray) match {
-  //      case ('{', '}', false) => parseObject[T](json)
-  //      case ('[', ']', true) => parseArray[T](json)
+  //    (yy.json(0), yy.json.last, isArray) match {
+  //      case ('{', '}', false) => parseObject[T](yy.json)
+  //      case ('[', ']', true) => parseArray[T](yy.json)
   //      case _ => throw new RuntimeException("Brace And Type Not Match")
   //    }
   //  }
