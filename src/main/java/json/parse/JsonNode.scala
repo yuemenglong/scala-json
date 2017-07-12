@@ -13,19 +13,19 @@ case class JsonNull() extends JsonNode {
 
 case class JsonBool(var value: Boolean) extends JsonNode {
   override def toString: String = {
-    s"${value}"
+    s"$value"
   }
 }
 
 case class JsonNum(var value: Double) extends JsonNode {
   override def toString: String = {
-    s"${value}"
+    s"$value"
   }
 }
 
 case class JsonStr(var value: String) extends JsonNode {
   override def toString: String = {
-    s""""${value}""""
+    s""""$value""""
   }
 }
 
@@ -33,18 +33,18 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
   override def toString: String = {
     val content = map.toList.map(p => {
       val (name, node) = p
-      s"${name}: ${node}"
+      s"$name: $node"
     }).mkString(", ")
-    s"{${content}}"
+    s"{$content}"
   }
 }
 
 case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
   override def toString: String = {
     val content = array.map(node => {
-      s"${node}"
+      s"$node"
     }).mkString(", ")
-    s"[${content}]"
+    s"[$content]"
   }
 }
 

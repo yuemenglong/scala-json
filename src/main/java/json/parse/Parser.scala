@@ -2,7 +2,6 @@ package json.parse
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
-import scala.util.parsing.json.JSON
 
 /**
   * Created by Administrator on 2017/7/5.
@@ -209,17 +208,5 @@ object Parser {
       }
     }
     (JsonArr(arr.toArray), pos)
-  }
-
-  def main(args: Array[String]): Unit = {
-    val json = Source.fromFile("D:/orders.json").getLines().mkString("").trim
-    val t1 = System.currentTimeMillis()
-    val (n, p) = parseArr(json, 0)
-    val t2 = System.currentTimeMillis()
-    //    println(n, p, json.length)
-    JSON.parseFull(json)
-    val t3 = System.currentTimeMillis()
-    println(t2 - t1)
-    println(t3 - t2)
   }
 }

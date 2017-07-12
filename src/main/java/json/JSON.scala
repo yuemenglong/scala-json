@@ -1,12 +1,12 @@
 package json
 
+import json.parse.{JsonNode, Parser}
+
 import scala.collection.mutable.ArrayBuffer
 
 /**
   * Created by Administrator on 2017/7/5.
   */
-
-
 
 
 object JSON {
@@ -26,5 +26,16 @@ object JSON {
 
   }
 
-
+  def parse(json: String): JsonNode = {
+    val str = json.trim
+    val (node, length) = (str(0), str.last) match {
+      case ('{', '}') => Parser.parseObj(str, 0)
+      case ('[', ']') => Parser.parseArr(str, 0)
+      case _ => throw new RuntimeException("Invalid Json Format")
+    }
+    if (length != str.length - 1) {
+      throw new RuntimeException("Json End Before String End")
+    }
+    node
+  }
 }
