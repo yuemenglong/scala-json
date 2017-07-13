@@ -23,7 +23,7 @@ object Kit {
     if (!clazz.isArray) {
       return clazz
     }
-    val name = clazz.getName.replaceAll("^\\[L", "")
+    val name = clazz.getName.replaceAll("(^\\[L)|(;$)", "")
     Class.forName(name)
   }
 

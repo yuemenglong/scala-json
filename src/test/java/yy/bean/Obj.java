@@ -11,6 +11,7 @@ public class Obj {
     private Boolean booleanValue;
     private Object nullValue;
     private Obj objValue;
+    private Obj[] objs;
 
     public Integer getIntValue() {
         return intValue;
@@ -68,4 +69,11 @@ public class Obj {
         this.objValue = objValue;
     }
 
+    public Obj[] getObjs() {
+        return objs;
+    }
+
+    public void setObjs(Obj[] objs) {
+        this.objs = objs;
+    }
 }

@@ -1,8 +1,6 @@
 package yy.json
 
-import yy.json.parse.{JsonArr, JsonNode, JsonObj, Parser}
-
-import scala.collection.mutable.ArrayBuffer
+import yy.json.parse._
 
 /**
   * Created by Administrator on 2017/7/5.
@@ -10,16 +8,6 @@ import scala.collection.mutable.ArrayBuffer
 
 
 object JSON {
-
-
-  //  def parse[T](yy.json: String, clazz: Class[_]): T = {
-  //    val isArray = clazz.isAssignableFrom(classOf[Array[_]])
-  //    (yy.json(0), yy.json.last, isArray) match {
-  //      case ('{', '}', false) => parseObject[T](yy.json)
-  //      case ('[', ']', true) => parseArray[T](yy.json)
-  //      case _ => throw new RuntimeException("Brace And Type Not Match")
-  //    }
-  //  }
 
   def parse(json: String): JsonNode = {
     val str = json.trim
@@ -33,4 +21,16 @@ object JSON {
     }
     node
   }
+
+  def parse[T](json: String, clazz: Class[T]): T = parse(json).as(clazz)
+
+  def convert(obj: Object): JsonNode = {
+    if (obj.getClass.isArray) {
+      Convert.fromArray(obj)
+    } else {
+      Convert.fromObject(obj)
+    }
+  }
+
+  def stringify(obj: Object): String = convert(obj).toString
 }

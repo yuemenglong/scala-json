@@ -7,6 +7,10 @@ import yy.json.kit.Kit
 
 import scala.reflect.ClassTag
 
+trait AsT {
+  def as[T](clazz: Class[T]): T
+}
+
 /**
   * Created by Administrator on 2017/7/13.
   */

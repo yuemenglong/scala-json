@@ -3,7 +3,15 @@ package yy.json.parse
 /**
   * Created by Administrator on 2017/7/5.
   */
-abstract class JsonNode
+abstract class JsonNode extends AsT {
+  override def as[T](clazz: Class[T]): T = {
+    (this, clazz.isArray) match {
+      case (arr: JsonArr, true) => Convert.toArray(arr, clazz).asInstanceOf[T]
+      case (obj: JsonObj, false) => Convert.toObject(obj, clazz).asInstanceOf[T]
+      case _ => throw new RuntimeException("Type Not Match, Maybe Need Pass Array Class ")
+    }
+  }
+}
 
 case class JsonNull() extends JsonNode {
   override def toString: String = {
@@ -33,7 +41,7 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
   override def toString: String = {
     val content = map.toList.map(p => {
       val (name, node) = p
-      s"$name: $node"
+      s""""$name": $node"""
     }).mkString(",")
     s"{$content}"
   }

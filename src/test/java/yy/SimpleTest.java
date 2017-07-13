@@ -21,7 +21,7 @@ public class SimpleTest {
     }
 
     @Test
-    public void testConvert() throws IllegalAccessException, InstantiationException {
+    public void testConvert() {
         Obj obj = new Obj();
         obj.setIntValue(1);
         obj.setLongValue(2L);
@@ -33,6 +33,10 @@ public class SimpleTest {
         obj.getObjValue().setIntValue(10);
         obj.getObjValue().setLongValue(20L);
 
+        obj.setObjs(new Obj[]{new Obj(), new Obj()});
+        obj.getObjs()[0].setStringValue("obj0");
+        obj.getObjs()[1].setStringValue("obj1");
+
         JsonObj root = Convert.fromObject(obj);
         String s1 = root.toString();
         System.out.println(s1);
@@ -41,5 +45,33 @@ public class SimpleTest {
         String s2 = root.toString();
         System.out.println(s2);
         Assert.assertEquals(s1, s2);
+    }
+
+    @Test
+    public void testApi() {
+        Obj obj = new Obj();
+        obj.setIntValue(1);
+        obj.setLongValue(2L);
+        obj.setDoubleValue(3.4);
+        obj.setStringValue("str");
+        obj.setBooleanValue(true);
+
+        obj.setObjValue(new Obj());
+        obj.getObjValue().setIntValue(10);
+        obj.getObjValue().setLongValue(20L);
+
+        obj.setObjs(new Obj[]{new Obj(), new Obj()});
+        obj.getObjs()[0].setStringValue("obj0");
+        obj.getObjs()[1].setStringValue("obj1");
+
+        String s1 = JSON.stringify(obj);
+        Obj o2 = JSON.parse(s1, Obj.class);
+        String s2 = JSON.stringify(o2);
+        Assert.assertEquals(s1, s2);
+
+        String s3 = JSON.stringify(o2.getObjs());
+        Obj[] os = JSON.parse(s3, Obj[].class);
+        String s4 = JSON.stringify(os);
+        Assert.assertEquals(s3, s4);
     }
 }

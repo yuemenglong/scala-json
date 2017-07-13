@@ -148,7 +148,6 @@ object Parser {
   }
 
   def parseArr(json: String, start: Int): (JsonNode, Int) = {
-    println("parseArr", start)
     var pos = start + 1
     var state = "item" // dot finish
     var arr = ArrayBuffer[JsonNode]()
