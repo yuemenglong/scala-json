@@ -1,7 +1,6 @@
 package yy.json.parse
 
 import scala.collection.mutable.ArrayBuffer
-import scala.io.Source
 
 /**
   * Created by Administrator on 2017/7/5.

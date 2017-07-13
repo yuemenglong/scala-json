@@ -5,21 +5,12 @@ import org.junit.Test;
 import yy.bean.Obj;
 import yy.json.JSON;
 import yy.json.parse.Convert;
-import yy.json.parse.JsonNode;
 import yy.json.parse.JsonObj;
 
 /**
- * Created by Administrator on 2017/7/12.
+ * Created by <yuemenglong@126.com> on 2017/7/12.
  */
 public class SimpleTest {
-    @Test
-    public void test() {
-        String json = "{a:null,b:1,c:1.1,d:-1.1234,e:\"string\",f:{fa:1},g:[1,2,3]}";
-        JsonNode root = JSON.parse(json);
-        String conv = root.toString();
-        System.out.println(conv);
-    }
-
     @Test
     public void testConvert() {
         Obj obj = new Obj();
@@ -39,11 +30,9 @@ public class SimpleTest {
 
         JsonObj root = Convert.fromObject(obj);
         String s1 = root.toString();
-        System.out.println(s1);
         Obj obj2 = (Obj) Convert.toObject(root, Obj.class);
         root = Convert.fromObject(obj2);
         String s2 = root.toString();
-        System.out.println(s2);
         Assert.assertEquals(s1, s2);
     }
 
@@ -73,5 +62,15 @@ public class SimpleTest {
         Obj[] os = JSON.parse(s3, Obj[].class);
         String s4 = JSON.stringify(os);
         Assert.assertEquals(s3, s4);
+    }
+
+    @Test
+    public void testNull() {
+        Obj obj = new Obj();
+        obj.setIntValue(1);
+        String s1 = JSON.stringify(obj);
+        String s2 = JSON.stringify(obj, true);
+        Assert.assertEquals(s1, "{\"intValue\": 1.0}");
+        Assert.assertNotEquals(s1, s2);
     }
 }

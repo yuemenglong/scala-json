@@ -33,4 +33,6 @@ object JSON {
   }
 
   def stringify(obj: Object): String = convert(obj).toString
+
+  def stringify(obj: Object, stringifyNull: Boolean): String = convert(obj).toString(stringifyNull)
 }
