@@ -34,7 +34,7 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
     val content = map.toList.map(p => {
       val (name, node) = p
       s"$name: $node"
-    }).mkString(", ")
+    }).mkString(",")
     s"{$content}"
   }
 }
@@ -43,7 +43,7 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
   override def toString: String = {
     val content = array.map(node => {
       s"$node"
-    }).mkString(", ")
+    }).mkString(",")
     s"[$content]"
   }
 }

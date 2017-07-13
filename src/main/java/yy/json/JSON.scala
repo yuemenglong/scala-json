@@ -1,6 +1,6 @@
 package yy.json
 
-import yy.json.parse.{JsonNode, Parser}
+import yy.json.parse.{JsonArr, JsonNode, JsonObj, Parser}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -11,7 +11,6 @@ import scala.collection.mutable.ArrayBuffer
 
 object JSON {
 
-  def constructorMap = Map[String, () => Any]()
 
   //  def parse[T](yy.json: String, clazz: Class[_]): T = {
   //    val isArray = clazz.isAssignableFrom(classOf[Array[_]])
@@ -21,10 +20,6 @@ object JSON {
   //      case _ => throw new RuntimeException("Brace And Type Not Match")
   //    }
   //  }
-
-  def parse[T](json: String, obj: T): Unit = {
-
-  }
 
   def parse(json: String): JsonNode = {
     val str = json.trim

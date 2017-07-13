@@ -1,11 +1,31 @@
 package yy.json.kit
 
-import java.lang.reflect.{Field, ParameterizedType}
+import java.lang.reflect.{Field, Method, ParameterizedType}
+
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * Created by Administrator on 2017/7/5.
   */
 object Kit {
+
+  def upperCaseFirst(str: String): String = {
+    if (str == null) {
+      return null
+    }
+    if (str.isEmpty) {
+      return str
+    }
+    str(0).toUpper + str.substring(1)
+  }
+
+  def getArrayType(clazz: Class[_]): Class[_] = {
+    if (!clazz.isArray) {
+      return clazz
+    }
+    val name = clazz.getName.replaceAll("^\\[L", "")
+    Class.forName(name)
+  }
 
   def isGenericType(clazz: Class[_]): Boolean = {
     clazz.getGenericSuperclass.isInstanceOf[ParameterizedType]
@@ -18,5 +38,27 @@ object Kit {
     //返回表示此类型实际类型参数的 Type 对象的数组。
     val params = genericType.asInstanceOf[ParameterizedType].getActualTypeArguments
     params(0).asInstanceOf[Class[_]]
+  }
+
+  def getDeclaredFields(clazz: Class[_]): Array[Field] = {
+    val ret = new ArrayBuffer[Field]()
+    clazz.getDeclaredFields.foreach(ret += _)
+    var parent = clazz.getSuperclass
+    while (parent != null) {
+      parent.getDeclaredFields.foreach(ret += _)
+      parent = parent.getSuperclass
+    }
+    ret.toArray
+  }
+
+  def getDeclaredMethod(clazz: Class[_]): Array[Method] = {
+    val ret = new ArrayBuffer[Method]()
+    clazz.getDeclaredMethods.foreach(ret += _)
+    var parent = clazz.getSuperclass
+    while (parent != null) {
+      parent.getDeclaredMethods.foreach(ret += _)
+      parent = parent.getSuperclass
+    }
+    ret.toArray
   }
 }
