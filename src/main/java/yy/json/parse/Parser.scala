@@ -51,7 +51,11 @@ object Parser {
       pos += 1
       c = json(pos)
     }
-    (JsonNum(n.toDouble), pos - 1)
+    if (hasDot) {
+      (JsonDouble(n.toDouble), pos - 1)
+    } else {
+      (JsonLong(n.toLong), pos - 1)
+    }
   }
 
   def parseObj(json: String, start: Int): (JsonNode, Int) = {

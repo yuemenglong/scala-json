@@ -27,19 +27,19 @@ object Convert {
     constructorMap = map
   }
 
-  def toNumber(n: JsonNum, clazz: Class[_]): Object = {
+  def toNumber(n: JsonValue, clazz: Class[_]): Object = {
     clazz match {
-      case `classOfInteger` => new lang.Integer(n.value.toInt)
-      case `classOfLong` => new lang.Long(n.value.toLong)
-      case `classOfDouble` => new lang.Double(n.value)
+      case `classOfInteger` => new lang.Integer(n.toLong.toInt)
+      case `classOfLong` => new lang.Long(n.toLong)
+      case `classOfDouble` => new lang.Double(n.toDouble)
     }
   }
 
-  def fromNumber(value: Object): JsonNum = {
+  def fromNumber(value: Object): JsonValue = {
     value.getClass match {
-      case `classOfInteger` => JsonNum(value.asInstanceOf[lang.Integer].doubleValue())
-      case `classOfLong` => JsonNum(value.asInstanceOf[lang.Long].doubleValue())
-      case `classOfDouble` => JsonNum(value.asInstanceOf[lang.Double].doubleValue())
+      case `classOfInteger` => JsonLong(value.asInstanceOf[lang.Integer].longValue())
+      case `classOfLong` => JsonLong(value.asInstanceOf[lang.Long].longValue())
+      case `classOfDouble` => JsonDouble(value.asInstanceOf[lang.Double].doubleValue())
     }
   }
 

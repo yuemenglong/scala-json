@@ -29,16 +29,42 @@ case class JsonBool(var value: Boolean) extends JsonNode {
   }
 }
 
-case class JsonNum(var value: Double) extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = {
-    s"$value"
-  }
+//case class JsonNum(var value: Double) extends JsonNode {
+//  override def toString(stringifyNull: Boolean): String = {
+//    s"$value"
+//  }
+//}
+
+abstract class JsonValue extends JsonNode {
+  def toLong: Long
+
+  def toDouble: Double
 }
 
-case class JsonStr(var value: String) extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = {
-    s""""$value""""
-  }
+abstract class JsonNum extends JsonValue
+
+case class JsonLong(var value: Long) extends JsonNum {
+  override def toString(stringifyNull: Boolean): String = s"$value"
+
+  override def toLong: Long = value
+
+  override def toDouble: Double = value.toDouble
+}
+
+case class JsonDouble(var value: Double) extends JsonNum {
+  override def toString(stringifyNull: Boolean): String = s"$value"
+
+  override def toLong: Long = value.toLong
+
+  override def toDouble: Double = value
+}
+
+case class JsonStr(var value: String) extends JsonValue {
+  override def toString(stringifyNull: Boolean): String = s""""$value""""
+
+  override def toLong: Long = value.toLong
+
+  override def toDouble: Double = value.toDouble
 }
 
 case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
@@ -51,6 +77,26 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
     }).mkString(",")
     s"{$content}"
   }
+
+  def size(): Int = {
+    map.size
+  }
+
+  def get(name: String): JsonNode = {
+    map(name)
+  }
+
+  def set(name: String, value: JsonNode): Unit = {
+    map += (name -> value)
+  }
+
+  def remove(name: String): Unit = {
+    map -= name
+  }
+
+  def contains(name: String): Boolean = {
+    map.contains(name)
+  }
 }
 
 case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
@@ -61,6 +107,18 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
       s"${node.toString(stringifyNull)}"
     }).mkString(",")
     s"[$content]"
+  }
+
+  def length(): Int = {
+    array.length
+  }
+
+  def push(node: JsonNode): Unit = {
+    array = array ++ Array(node)
+  }
+
+  def get(idx: Int): JsonNode = {
+    array(idx)
   }
 }
 
