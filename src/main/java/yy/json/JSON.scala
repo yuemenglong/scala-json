@@ -5,8 +5,6 @@ import yy.json.parse._
 /**
   * Created by Administrator on 2017/7/5.
   */
-
-
 object JSON {
 
   def parse(json: String): JsonNode = {
@@ -39,4 +37,6 @@ object JSON {
   def walk(node: JsonNode, fn: (JsonNode) => JsonNode): JsonNode = {
     Walk.walk(node, fn)
   }
+
+  def setConstructorMap(map: Map[Class[_], () => Object]): Unit = Convert.setConstructorMap(map)
 }

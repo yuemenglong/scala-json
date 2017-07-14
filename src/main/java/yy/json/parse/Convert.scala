@@ -18,9 +18,9 @@ object Convert {
   val classOfBoolean: Class[lang.Boolean] = classOf[lang.Boolean]
   val classOfString: Class[lang.String] = classOf[lang.String]
 
-  var constructorMap: Map[String, () => Any] = Map[String, () => Any]()
+  var constructorMap: Map[Class[_], () => Any] = Map[Class[_], () => Any]()
 
-  def setConstructorMap(map: Map[String, () => Any]): Unit = {
+  def setConstructorMap(map: Map[Class[_], () => Any]): Unit = {
     constructorMap = map
   }
 
@@ -51,8 +51,8 @@ object Convert {
       .map(f => (f.getName, f))(collection.breakOut)
     val methods: Map[String, Method] = Kit.getDeclaredMethod(clazz)
       .map(m => (m.getName, m))(collection.breakOut)
-    val ret = if (constructorMap.contains(clazz.getSimpleName)) {
-      constructorMap(clazz.getSimpleName)()
+    val ret = if (constructorMap.contains(clazz)) {
+      constructorMap(clazz)()
     } else {
       clazz.newInstance()
     }

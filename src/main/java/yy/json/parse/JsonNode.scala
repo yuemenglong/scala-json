@@ -167,6 +167,26 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
     }
     map(name).asInstanceOf[JsonArr]
   }
+
+  def setBool(name: String, value: Boolean): Unit = {
+    map += (name -> JsonBool(value))
+  }
+
+  def setInt(name: String, value: Int): Unit = {
+    map += (name -> JsonLong(value))
+  }
+
+  def setLong(name: String, value: Long): Unit = {
+    map += (name -> JsonLong(value))
+  }
+
+  def setDouble(name: String, value: Double): Unit = {
+    map += (name -> JsonDouble(value))
+  }
+
+  def setStr(name: String, value: String): Unit = {
+    map += (name -> JsonStr(value))
+  }
 }
 
 case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
