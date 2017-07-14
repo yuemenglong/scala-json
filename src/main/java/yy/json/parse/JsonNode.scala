@@ -94,7 +94,7 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
       stringifyNull || !p._2.isInstanceOf[JsonNull]
     }).map(p => {
       val (name, node) = p
-      s""""$name": ${node.toString(stringifyNull)}"""
+      s""""$name":${node.toString(stringifyNull)}"""
     }).mkString(",")
     s"{$content}"
   }
