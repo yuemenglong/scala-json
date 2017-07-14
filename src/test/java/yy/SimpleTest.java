@@ -70,7 +70,7 @@ public class SimpleTest {
         obj.setIntValue(1);
         String s1 = JSON.stringify(obj);
         String s2 = JSON.stringify(obj, true);
-        Assert.assertEquals(s1, "{\"intValue\": 1.0}");
+        Assert.assertEquals(s1, "{\"intValue\": 1}");
         Assert.assertNotEquals(s1, s2);
     }
 }

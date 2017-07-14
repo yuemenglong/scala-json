@@ -39,24 +39,29 @@ abstract class JsonValue extends JsonNode {
   def toLong: Long
 
   def toDouble: Double
+
+  def toStr: String
 }
 
-abstract class JsonNum extends JsonValue
 
-case class JsonLong(var value: Long) extends JsonNum {
+case class JsonLong(var value: Long) extends JsonValue {
   override def toString(stringifyNull: Boolean): String = s"$value"
 
   override def toLong: Long = value
 
   override def toDouble: Double = value.toDouble
+
+  override def toStr: String = toString
 }
 
-case class JsonDouble(var value: Double) extends JsonNum {
+case class JsonDouble(var value: Double) extends JsonValue {
   override def toString(stringifyNull: Boolean): String = s"$value"
 
   override def toLong: Long = value.toLong
 
   override def toDouble: Double = value
+
+  override def toStr: String = toString
 }
 
 case class JsonStr(var value: String) extends JsonValue {
@@ -65,6 +70,8 @@ case class JsonStr(var value: String) extends JsonValue {
   override def toLong: Long = value.toLong
 
   override def toDouble: Double = value.toDouble
+
+  override def toStr: String = value
 }
 
 case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {

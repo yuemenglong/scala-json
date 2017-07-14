@@ -106,13 +106,18 @@ object Convert {
   }
 
   def fromNodeToValue(node: JsonNode, clazz: Class[_]): Object = {
-    node match {
-      case o: JsonObj => toObject(o, clazz)
-      case a: JsonArr => toArray(a, clazz)
-      case _: JsonNull => null
-      case n: JsonNum => toNumber(n, clazz)
-      case b: JsonBool => new lang.Boolean(b.value)
-      case s: JsonStr => s.value
+    if (node.isInstanceOf[JsonNull]) {
+      return null
+    }
+    (clazz, node) match {
+      case (`classOfString`, v: JsonValue) => v.toStr
+      case (`classOfInteger`, v: JsonValue) => new lang.Integer(v.toLong.toInt)
+      case (`classOfLong`, v: JsonValue) => new lang.Long(v.toLong)
+      case (`classOfDouble`, v: JsonValue) => new lang.Double(v.toDouble)
+      case (`classOfBoolean`, v: JsonBool) => new lang.Boolean(v.value)
+      case (_, v: JsonObj) => toObject(v, clazz)
+      case (_, v: JsonArr) => toArray(v, clazz)
+      case _ => throw new RuntimeException("Clazz And Node Type Not Match")
     }
   }
 }
