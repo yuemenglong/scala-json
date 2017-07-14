@@ -7,9 +7,6 @@ import yy.json.kit.Kit
 
 import scala.reflect.ClassTag
 
-trait AsT {
-  def as[T](clazz: Class[T]): T
-}
 
 /**
   * Created by Administrator on 2017/7/13.
@@ -29,7 +26,7 @@ object Convert {
 
   def toNumber(n: JsonValue, clazz: Class[_]): Object = {
     clazz match {
-      case `classOfInteger` => new lang.Integer(n.toLong.toInt)
+      case `classOfInteger` => new lang.Integer(n.toInt)
       case `classOfLong` => new lang.Long(n.toLong)
       case `classOfDouble` => new lang.Double(n.toDouble)
     }
@@ -111,7 +108,7 @@ object Convert {
     }
     (clazz, node) match {
       case (`classOfString`, v: JsonValue) => v.toStr
-      case (`classOfInteger`, v: JsonValue) => new lang.Integer(v.toLong.toInt)
+      case (`classOfInteger`, v: JsonValue) => new lang.Integer(v.toInt)
       case (`classOfLong`, v: JsonValue) => new lang.Long(v.toLong)
       case (`classOfDouble`, v: JsonValue) => new lang.Double(v.toDouble)
       case (`classOfBoolean`, v: JsonBool) => new lang.Boolean(v.value)

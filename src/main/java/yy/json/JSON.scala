@@ -12,8 +12,8 @@ object JSON {
   def parse(json: String): JsonNode = {
     val str = json.trim
     val (node, length) = (str(0), str.last) match {
-      case ('{', '}') => Parser.parseObj(str, 0)
-      case ('[', ']') => Parser.parseArr(str, 0)
+      case ('{', '}') => Parse.parseObj(str, 0)
+      case ('[', ']') => Parse.parseArr(str, 0)
       case _ => throw new RuntimeException("Invalid Json Format")
     }
     if (length != str.length - 1) {
@@ -35,4 +35,8 @@ object JSON {
   def stringify(obj: Object): String = convert(obj).toString
 
   def stringify(obj: Object, stringifyNull: Boolean): String = convert(obj).toString(stringifyNull)
+
+  def walk(node: JsonNode, fn: (JsonNode) => JsonNode): JsonNode = {
+    Walk.walk(node, fn)
+  }
 }

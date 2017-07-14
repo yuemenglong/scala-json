@@ -5,7 +5,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * Created by Administrator on 2017/7/5.
   */
-object Parser {
+object Parse {
 
   def parseNull(json: String, start: Int): (JsonNode, Int) = {
     val s = json.slice(start, start + "null".length)

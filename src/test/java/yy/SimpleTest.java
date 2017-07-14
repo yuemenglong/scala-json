@@ -5,6 +5,7 @@ import org.junit.Test;
 import yy.bean.Obj;
 import yy.json.JSON;
 import yy.json.parse.Convert;
+import yy.json.parse.JsonNode;
 import yy.json.parse.JsonObj;
 
 /**
@@ -72,5 +73,7 @@ public class SimpleTest {
         String s2 = JSON.stringify(obj, true);
         Assert.assertEquals(s1, "{\"intValue\": 1}");
         Assert.assertNotEquals(s1, s2);
+        JsonObj root = JSON.convert(obj).asObj();
+        Assert.assertEquals(root.getInt("intValue").intValue(), 1);
     }
 }
