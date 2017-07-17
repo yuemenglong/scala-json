@@ -1,5 +1,7 @@
 package yy.json.parse
 
+import yy.json.JSON
+
 /**
   * Created by Administrator on 2017/7/5.
   */
@@ -212,7 +214,7 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
     if (value == null) {
       map += (name -> JsonNull())
     } else {
-      map += (name -> JsonPlain(value))
+      map += (name -> JSON.parse(value))
     }
   }
 }
@@ -279,7 +281,7 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
     if (value == null) {
       array ++= Array(JsonNull())
     } else {
-      array ++= Array(JsonPlain(value))
+      array ++= Array(JSON.parse(value))
     }
   }
 
