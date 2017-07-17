@@ -65,7 +65,7 @@ public class SimpleTest {
     }
 
     @Test
-    public void testNull() {
+    public void testIgnoreNull() {
         Obj obj = new Obj();
         obj.setIntValue(1);
         String s1 = JSON.stringify(obj);
@@ -86,5 +86,12 @@ public class SimpleTest {
         String plain = root.get("objs").toString();
         root.setPlain("objs", plain);
         Assert.assertEquals(root.toString(), JSON.stringify(obj));
+    }
+
+    @Test
+    public void testGetFieldWhenNull(){
+        JsonObj obj = JSON.obj();
+        String s = obj.getStr("a");
+        System.out.println(s);
     }
 }

@@ -168,28 +168,52 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
     map(name).asInstanceOf[JsonArr]
   }
 
-  def setBool(name: String, value: Boolean): Unit = {
-    map += (name -> JsonBool(value))
+  def setBool(name: String, value: java.lang.Boolean): Unit = {
+    if (value == null) {
+      map += (name -> JsonNull())
+    } else {
+      map += (name -> JsonBool(value))
+    }
   }
 
-  def setInt(name: String, value: Int): Unit = {
-    map += (name -> JsonLong(value))
+  def setInt(name: String, value: java.lang.Integer): Unit = {
+    if (value == null) {
+      map += (name -> JsonNull())
+    } else {
+      map += (name -> JsonLong(value.longValue()))
+    }
   }
 
-  def setLong(name: String, value: Long): Unit = {
-    map += (name -> JsonLong(value))
+  def setLong(name: String, value: java.lang.Long): Unit = {
+    if (value == null) {
+      map += (name -> JsonNull())
+    } else {
+      map += (name -> JsonLong(value))
+    }
   }
 
-  def setDouble(name: String, value: Double): Unit = {
-    map += (name -> JsonDouble(value))
+  def setDouble(name: String, value: java.lang.Double): Unit = {
+    if (value == null) {
+      map += (name -> JsonNull())
+    } else {
+      map += (name -> JsonDouble(value))
+    }
   }
 
   def setStr(name: String, value: String): Unit = {
-    map += (name -> JsonStr(value))
+    if (value == null) {
+      map += (name -> JsonNull())
+    } else {
+      map += (name -> JsonStr(value))
+    }
   }
 
   def setPlain(name: String, value: String): Unit = {
-    map += (name -> JsonPlain(value))
+    if (value == null) {
+      map += (name -> JsonNull())
+    } else {
+      map += (name -> JsonPlain(value))
+    }
   }
 }
 
@@ -211,28 +235,52 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
     array = array ++ Array(node)
   }
 
-  def pushBool(name: String, value: Boolean): Unit = {
-    array ++= Array(JsonBool(value))
+  def pushBool(name: String, value: java.lang.Boolean): Unit = {
+    if (value == null) {
+      array ++= Array(JsonNull())
+    } else {
+      array ++= Array(JsonBool(value))
+    }
   }
 
-  def pushInt(name: String, value: Int): Unit = {
-    array ++= Array(JsonLong(value))
+  def pushInt(name: String, value: java.lang.Integer): Unit = {
+    if (value == null) {
+      array ++= Array(JsonNull())
+    } else {
+      array ++= Array(JsonLong(value.longValue()))
+    }
   }
 
-  def pushLong(name: String, value: Long): Unit = {
-    array ++= Array(JsonLong(value))
+  def pushLong(name: String, value: java.lang.Long): Unit = {
+    if (value == null) {
+      array ++= Array(JsonNull())
+    } else {
+      array ++= Array(JsonLong(value))
+    }
   }
 
-  def pushDouble(name: String, value: Double): Unit = {
-    array ++= Array(JsonDouble(value))
+  def pushDouble(name: String, value: java.lang.Double): Unit = {
+    if (value == null) {
+      array ++= Array(JsonNull())
+    } else {
+      array ++= Array(JsonDouble(value))
+    }
   }
 
   def pushStr(name: String, value: String): Unit = {
-    array ++= Array(JsonStr(value))
+    if (value == null) {
+      array ++= Array(JsonNull())
+    } else {
+      array ++= Array(JsonStr(value))
+    }
   }
 
   def pushPlain(name: String, value: String): Unit = {
-    array ++= Array(JsonPlain(value))
+    if (value == null) {
+      array ++= Array(JsonNull())
+    } else {
+      array ++= Array(JsonPlain(value))
+    }
   }
 
   def get(idx: Int): JsonNode = {
