@@ -187,6 +187,10 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
   def setStr(name: String, value: String): Unit = {
     map += (name -> JsonStr(value))
   }
+
+  def setPlain(name: String, value: String): Unit = {
+    map += (name -> JsonPlain(value))
+  }
 }
 
 case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
@@ -205,6 +209,30 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
 
   def push(node: JsonNode): Unit = {
     array = array ++ Array(node)
+  }
+
+  def pushBool(name: String, value: Boolean): Unit = {
+    array ++= Array(JsonBool(value))
+  }
+
+  def pushInt(name: String, value: Int): Unit = {
+    array ++= Array(JsonLong(value))
+  }
+
+  def pushLong(name: String, value: Long): Unit = {
+    array ++= Array(JsonLong(value))
+  }
+
+  def pushDouble(name: String, value: Double): Unit = {
+    array ++= Array(JsonDouble(value))
+  }
+
+  def pushStr(name: String, value: String): Unit = {
+    array ++= Array(JsonStr(value))
+  }
+
+  def pushPlain(name: String, value: String): Unit = {
+    array ++= Array(JsonPlain(value))
   }
 
   def get(idx: Int): JsonNode = {

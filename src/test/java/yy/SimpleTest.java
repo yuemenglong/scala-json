@@ -76,4 +76,16 @@ public class SimpleTest {
         JsonObj root = JSON.convert(obj).asObj();
         Assert.assertEquals(root.getInt("intValue").intValue(), 1);
     }
+
+    @Test
+    public void testPlain() {
+        Obj obj = new Obj();
+        obj.setIntValue(1);
+        obj.setObjs(new Obj[]{new Obj()});
+        obj.getObjs()[0].setIntValue(100);
+        JsonObj root = JSON.convert(obj).asObj();
+        String plain = root.get("objs").toString();
+        root.setPlain("objs", plain);
+        Assert.assertEquals(root.toString(), JSON.stringify(obj));
+    }
 }
