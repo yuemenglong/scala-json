@@ -38,5 +38,9 @@ object JSON {
     Walk.walk(node, fn)
   }
 
+  def obj(): JsonObj = JsonObj(Map())
+
+  def arr(): JsonArr = JsonArr(Array())
+
   def setConstructorMap(map: Map[Class[_], () => Object]): Unit = Convert.setConstructorMap(map)
 }
