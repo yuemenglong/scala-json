@@ -5,6 +5,7 @@ import org.junit.Test;
 import yy.bean.Obj;
 import yy.json.JSON;
 import yy.json.parse.Convert;
+import yy.json.parse.JsonLong;
 import yy.json.parse.JsonObj;
 
 /**
@@ -89,9 +90,31 @@ public class SimpleTest {
     }
 
     @Test
-    public void testGetFieldWhenNull(){
+    public void testGetFieldWhenNull() {
         JsonObj obj = JSON.obj();
         String s = obj.getStr("a");
         System.out.println(s);
+    }
+
+    @Test
+    public void testWalk() {
+        JsonObj obj = JSON.obj();
+        obj.setLong("a", 1L);
+        obj.setLong("b", 2L);
+        obj.setLong("c", 3L);
+        obj = JSON.walk(obj, (node) -> {
+            if (!(node instanceof JsonLong)) {
+                return node;
+            }
+            JsonLong n = (JsonLong) node;
+            if (n.value() == 3) {
+                return new JsonLong(-3);
+            } else {
+                return node;
+            }
+        }).asObj();
+        Assert.assertEquals(obj.getLong("a").longValue(), 1L);
+        Assert.assertEquals(obj.getLong("b").longValue(), 2L);
+        Assert.assertEquals(obj.getLong("c").longValue(), -3L);
     }
 }
