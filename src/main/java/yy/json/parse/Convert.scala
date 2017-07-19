@@ -73,21 +73,19 @@ object Convert {
   }
 
   def fromObject(obj: Object): JsonObj = {
+    def getMethodName(fieldName: String) = s"get${Kit.upperCaseFirst(fieldName)}"
+
     val fields: Array[Field] = Kit.getDeclaredFields(obj.getClass)
     val methods: Map[String, Method] = Kit.getDeclaredMethod(obj.getClass)
       .map(m => (m.getName, m))(collection.breakOut)
-    val map: Map[String, JsonNode] = fields.map(f => {
-      val name = f.getName
-      val getMethodName = s"get${Kit.upperCaseFirst(name)}"
-      val value = if (methods.contains(getMethodName)) {
-        methods(getMethodName).invoke(obj)
-      } else {
-        f.setAccessible(true)
-        f.get(obj)
-      }
-      val node = fromValueToNode(value)
-      (name, node)
-    })(collection.breakOut)
+    val map: Map[String, JsonNode] = fields
+      .filter(f => methods.contains(getMethodName(f.getName)))
+      .map(f => {
+        val name = f.getName
+        val value = methods(getMethodName(name)).invoke(obj)
+        val node = fromValueToNode(value)
+        (name, node)
+      })(collection.breakOut)
     JsonObj(map)
   }
 
