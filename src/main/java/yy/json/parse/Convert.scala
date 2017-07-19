@@ -79,10 +79,14 @@ object Convert {
     val methods: Map[String, Method] = Kit.getDeclaredMethod(obj.getClass)
       .map(m => (m.getName, m))(collection.breakOut)
     val map: Map[String, JsonNode] = fields
-      .filter(f => methods.contains(getMethodName(f.getName)))
+      .filter(f => methods.contains(getMethodName(f.getName)) || methods.contains(f.getName))
       .map(f => {
         val name = f.getName
-        val value = methods(getMethodName(name)).invoke(obj)
+        val value = if (methods.contains(getMethodName(name))) {
+          methods(getMethodName(name)).invoke(obj)
+        } else {
+          methods(name).invoke(obj)
+        }
         val node = fromValueToNode(value)
         (name, node)
       })(collection.breakOut)
