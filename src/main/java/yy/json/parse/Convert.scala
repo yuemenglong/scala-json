@@ -1,7 +1,7 @@
 package yy.json.parse
 
 import java.lang
-import java.lang.reflect.{Field, Method}
+import java.lang.reflect.{Field, Method, Modifier}
 
 import yy.json.kit.Kit
 
@@ -12,11 +12,17 @@ import scala.reflect.ClassTag
   * Created by Administrator on 2017/7/13.
   */
 object Convert {
-  val classOfInteger: Class[Integer] = classOf[lang.Integer]
-  val classOfLong: Class[lang.Long] = classOf[lang.Long]
-  val classOfDouble: Class[lang.Double] = classOf[lang.Double]
-  val classOfBoolean: Class[lang.Boolean] = classOf[lang.Boolean]
-  val classOfString: Class[lang.String] = classOf[lang.String]
+  val classOfJavaInteger: Class[Integer] = classOf[lang.Integer]
+  val classOfJavaLong: Class[lang.Long] = classOf[lang.Long]
+  val classOfJavaDouble: Class[lang.Double] = classOf[lang.Double]
+  val classOfJavaBoolean: Class[lang.Boolean] = classOf[lang.Boolean]
+  val classOfJavaString: Class[lang.String] = classOf[lang.String]
+
+  val classOfScalaInt: Class[Int] = classOf[Int]
+  val classOfScalaLong: Class[Long] = classOf[Long]
+  val classOfScalaDouble: Class[Double] = classOf[Double]
+  val classOfScalaBoolean: Class[Boolean] = classOf[Boolean]
+  val classOfScalaString: Class[String] = classOf[String]
 
   var constructorMap: Map[Class[_], () => Any] = Map[Class[_], () => Any]()
 
@@ -26,17 +32,17 @@ object Convert {
 
   def toNumber(n: JsonValue, clazz: Class[_]): Object = {
     clazz match {
-      case `classOfInteger` => new lang.Integer(n.toInt)
-      case `classOfLong` => new lang.Long(n.toLong)
-      case `classOfDouble` => new lang.Double(n.toDouble)
+      case `classOfJavaInteger` | `classOfScalaInt` => new lang.Integer(n.toInt)
+      case `classOfJavaLong` | `classOfScalaLong` => new lang.Long(n.toLong)
+      case `classOfJavaDouble` | `classOfScalaDouble` => new lang.Double(n.toDouble)
     }
   }
 
   def fromNumber(value: Object): JsonValue = {
     value.getClass match {
-      case `classOfInteger` => JsonLong(value.asInstanceOf[lang.Integer].longValue())
-      case `classOfLong` => JsonLong(value.asInstanceOf[lang.Long].longValue())
-      case `classOfDouble` => JsonDouble(value.asInstanceOf[lang.Double].doubleValue())
+      case `classOfJavaInteger` | `classOfScalaInt` => JsonLong(value.asInstanceOf[lang.Integer].longValue())
+      case `classOfJavaLong` | `classOfScalaLong` => JsonLong(value.asInstanceOf[lang.Long].longValue())
+      case `classOfJavaDouble` | `classOfScalaDouble` => JsonDouble(value.asInstanceOf[lang.Double].doubleValue())
     }
   }
 
@@ -70,14 +76,18 @@ object Convert {
     val fields: Array[Field] = Kit.getDeclaredFields(obj.getClass)
     val methods: Map[String, Method] = Kit.getDeclaredMethod(obj.getClass)
       .map(m => (m.getName, m))(collection.breakOut)
-    val map: Map[String, JsonNode] = fields.filter(f => methods.contains(s"get${Kit.upperCaseFirst(f.getName)}"))
-      .map(f => {
-        val method = methods(s"get${Kit.upperCaseFirst(f.getName)}")
-        val value = method.invoke(obj)
-        val name = f.getName
-        val node = fromValueToNode(value)
-        (name, node)
-      })(collection.breakOut)
+    val map: Map[String, JsonNode] = fields.map(f => {
+      val name = f.getName
+      val getMethodName = s"get${Kit.upperCaseFirst(name)}"
+      val value = if (methods.contains(getMethodName)) {
+        methods(getMethodName).invoke(obj)
+      } else {
+        f.setAccessible(true)
+        f.get(obj)
+      }
+      val node = fromValueToNode(value)
+      (name, node)
+    })(collection.breakOut)
     JsonObj(map)
   }
 
@@ -91,9 +101,10 @@ object Convert {
       return JsonNull()
     }
     value.getClass match {
-      case `classOfInteger` | `classOfLong` | `classOfDouble` => fromNumber(value)
-      case `classOfString` => JsonStr(value.asInstanceOf[lang.String])
-      case `classOfBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
+      case `classOfJavaInteger` | `classOfJavaLong` | `classOfJavaDouble`
+           | `classOfScalaInt` | `classOfScalaLong` | `classOfScalaDouble` => fromNumber(value)
+      case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
+      case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
       case t => if (t.isArray) {
         fromArray(value)
       } else {
@@ -107,11 +118,11 @@ object Convert {
       return null
     }
     (clazz, node) match {
-      case (`classOfString`, v: JsonValue) => v.toStr
-      case (`classOfInteger`, v: JsonValue) => new lang.Integer(v.toInt)
-      case (`classOfLong`, v: JsonValue) => new lang.Long(v.toLong)
-      case (`classOfDouble`, v: JsonValue) => new lang.Double(v.toDouble)
-      case (`classOfBoolean`, v: JsonBool) => new lang.Boolean(v.value)
+      case (`classOfJavaString` | `classOfScalaString`, v: JsonValue) => v.toStr
+      case (`classOfJavaInteger` | `classOfScalaInt`, v: JsonValue) => new lang.Integer(v.toInt)
+      case (`classOfJavaLong` | `classOfScalaLong`, v: JsonValue) => new lang.Long(v.toLong)
+      case (`classOfJavaDouble` | `classOfScalaDouble`, v: JsonValue) => new lang.Double(v.toDouble)
+      case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonBool) => new lang.Boolean(v.value)
       case (_, v: JsonObj) => toObject(v, clazz)
       case (_, v: JsonArr) => toArray(v, clazz)
       case _ => throw new RuntimeException("Clazz And Node Type Not Match")
