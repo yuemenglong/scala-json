@@ -117,6 +117,10 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
     map -= name
   }
 
+  def clear(): Unit = {
+    map = Map[String, JsonNode]()
+  }
+
   def contains(name: String): Boolean = {
     map.contains(name)
   }
@@ -231,6 +235,10 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
 
   def length(): Int = {
     array.length
+  }
+
+  def clear(): Unit = {
+    array = Array()
   }
 
   def push(node: JsonNode): Unit = {

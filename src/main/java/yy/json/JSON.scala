@@ -23,7 +23,9 @@ object JSON {
   def parse[T](json: String, clazz: Class[T]): T = parse(json).as(clazz)
 
   def convert(obj: Object): JsonNode = {
-    if (obj.getClass.isArray) {
+    if (obj == null) {
+      new JsonNull
+    } else if (obj.getClass.isArray) {
       Convert.fromArray(obj)
     } else {
       Convert.fromObject(obj)
