@@ -27,9 +27,13 @@ abstract class JsonNode extends AsT {
 
   override def asArr(): JsonArr = this.asInstanceOf[JsonArr]
 
+  override def toString: String = toString(false)
+
   def toString(stringifyNull: Boolean): String
 
-  override def toString: String = toString(false)
+  def toJsString: String = toJsString(false)
+
+  def toJsString(stringifyNull: Boolean): String = toString(stringifyNull)
 }
 
 case class JsonNull() extends JsonNode {
@@ -64,6 +68,14 @@ case class JsonLong(var value: Long) extends JsonValue {
   override def toDouble: Double = value.toDouble
 
   override def toStr: String = toString
+
+  override def toJsString(stringifyNull: Boolean): String = {
+    if (value > Integer.MAX_VALUE) {
+      s""""$value""""
+    } else {
+      toString(stringifyNull)
+    }
+  }
 }
 
 case class JsonDouble(var value: Double) extends JsonValue {
