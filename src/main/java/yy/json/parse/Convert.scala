@@ -1,7 +1,7 @@
 package yy.json.parse
 
 import java.lang
-import java.lang.reflect.{Field, Method, Modifier}
+import java.lang.reflect.{Field, Method}
 
 import yy.json.kit.Kit
 
@@ -53,6 +53,10 @@ object Convert {
   }
 
   def toObject(obj: JsonObj, clazz: Class[_]): Object = {
+    def setMethodNameJ(fieldName: String) = s"set${Kit.upperCaseFirst(fieldName)}"
+
+    def setMethodNameS(fieldName: String) = s"${fieldName}_$$eq"
+
     val fields: Map[String, Field] = Kit.getDeclaredFields(clazz)
       .map(f => (f.getName, f))(collection.breakOut)
     val methods: Map[String, Method] = Kit.getDeclaredMethod(clazz)
@@ -62,30 +66,40 @@ object Convert {
     } else {
       clazz.newInstance()
     }
-    obj.map.toArray.filter(p => fields.contains(p._1) && methods.contains(s"set${Kit.upperCaseFirst(p._1)}"))
+    obj.map.toArray.filter(p => fields.contains(p._1))
       .foreach { case (name, node) =>
         val field = fields(name)
         val value = fromNodeToValue(node, field.getType)
-        val method = methods(s"set${Kit.upperCaseFirst(name)}")
+        val method = if (methods.contains(setMethodNameJ(name))) {
+          methods(setMethodNameJ(name))
+        } else if (methods.contains(setMethodNameS(name))) {
+          methods(setMethodNameS(name))
+        } else {
+          throw new RuntimeException(s"No Setter Found Of $name")
+        }
         method.invoke(ret, value.asInstanceOf[Object])
       }
     ret.asInstanceOf[Object]
   }
 
   def fromObject(obj: Object): JsonObj = {
-    def getMethodName(fieldName: String) = s"get${Kit.upperCaseFirst(fieldName)}"
+    def getMethodNameJ(fieldName: String) = s"get${Kit.upperCaseFirst(fieldName)}"
+
+    def getMethodNameS(fieldName: String) = fieldName
 
     val fields: Array[Field] = Kit.getDeclaredFields(obj.getClass)
     val methods: Map[String, Method] = Kit.getDeclaredMethod(obj.getClass)
       .map(m => (m.getName, m))(collection.breakOut)
     val map: Map[String, JsonNode] = fields
-      .filter(f => methods.contains(getMethodName(f.getName)) || methods.contains(f.getName))
+      .filter(f => methods.contains(getMethodNameJ(f.getName)) || methods.contains(f.getName))
       .map(f => {
         val name = f.getName
-        val value = if (methods.contains(getMethodName(name))) {
-          methods(getMethodName(name)).invoke(obj)
+        val value = if (methods.contains(getMethodNameJ(name))) {
+          methods(getMethodNameJ(name)).invoke(obj)
+        } else if (methods.contains(getMethodNameS(name))) {
+          methods(getMethodNameS(name)).invoke(obj)
         } else {
-          methods(name).invoke(obj)
+          throw new RuntimeException(s"No Getter On $name")
         }
         val node = fromValueToNode(value)
         (name, node)
