@@ -3,7 +3,7 @@ package yy;
 import org.junit.Assert;
 import org.junit.Test;
 import yy.bean.Obj;
-import yy.bean._ScalaObj;
+import yy.bean.ScalaObj;
 import yy.json.JSON;
 import yy.json.parse.Convert;
 import yy.json.parse.JsonLong;
@@ -121,11 +121,11 @@ public class SimpleTest {
 
     @Test
     public void testScala(){
-        _ScalaObj obj = new _ScalaObj();
+        ScalaObj obj = new ScalaObj();
         obj.id_$eq(1);
         obj.name_$eq("name");
         String json = JSON.stringify(obj);
-        _ScalaObj o2 = JSON.parse(json, _ScalaObj.class);
+        ScalaObj o2 = JSON.parse(json, ScalaObj.class);
         Assert.assertEquals(o2.id().longValue(), 1);
         Assert.assertEquals(o2.name(), "name");
     }

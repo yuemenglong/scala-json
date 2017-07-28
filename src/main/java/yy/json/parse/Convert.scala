@@ -24,8 +24,7 @@ object Convert {
   val classOfScalaBoolean: Class[Boolean] = classOf[Boolean]
   val classOfScalaString: Class[String] = classOf[String]
 
-  val classOfScalaMap: Class[Map[String, Object]] = classOf[Map[String, Object]]
-  val classOfArray: Class[Array[Object]] = classOf[Array[Object]]
+  val classOfJsonNode: Class[JsonNode] = classOf[JsonNode]
 
   var constructorMap: Map[Class[_], () => Any] = Map[Class[_], () => Any]()
 
@@ -53,6 +52,10 @@ object Convert {
     val itemClazz = Kit.getArrayType(clazz)
     val ct = ClassTag(itemClazz).asInstanceOf[ClassTag[Object]]
     arr.array.map(fromNodeToValue(_, itemClazz)).toArray(ct)
+  }
+
+  def toMap(obj: JsonObj, clazz: Class[_]): Map[String, Object] = {
+    obj.map
   }
 
   def toObject(obj: JsonObj, clazz: Class[_]): Object = {
@@ -125,18 +128,21 @@ object Convert {
       return JsonNull()
     }
     value.getClass match {
+      case `classOfJsonNode` => value.asInstanceOf[JsonNode]
       case `classOfJavaInteger` | `classOfJavaLong` | `classOfJavaDouble`
            | `classOfScalaInt` | `classOfScalaLong` | `classOfScalaDouble` => fromNumber(value)
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
       case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
-      case `classOfScalaMap` => fromMap(value)
-      case t => if (t.isArray) {
+      case t => if (value.isInstanceOf[Map[_, _]]) {
+        fromMap(value)
+      } else if (t.isArray) {
         fromArray(value)
       } else {
         fromObject(value)
       }
     }
   }
+
 
   def fromNodeToValue(node: JsonNode, clazz: Class[_]): Object = {
     if (node.isInstanceOf[JsonNull]) {
