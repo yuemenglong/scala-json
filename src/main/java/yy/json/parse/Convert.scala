@@ -130,13 +130,11 @@ object Convert {
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
       case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
       case `classOfScalaMap` => fromMap(value)
-      case `classOfArray` => fromArray(value)
-      case _ => fromObject(value)
-      //      case t => if (t.isArray) {
-      //        fromArray(value)
-      //      } else {
-      //        fromObject(value)
-      //      }
+      case t => if (t.isArray) {
+        fromArray(value)
+      } else {
+        fromObject(value)
+      }
     }
   }
 
