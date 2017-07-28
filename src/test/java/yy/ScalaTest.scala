@@ -16,10 +16,11 @@ class ScalaTest {
     obj.id = 1
     obj.name = "2"
     val json = JSON.stringify(obj)
-    val obj2 = JSON.parse(json, classOf[ScalaObj])
-    val json2 = JSON.stringify(obj2)
-    Assert.assertEquals(json, json2)
-    println(json)
+    val jo = JSON.parse(json)
+    val id = jo.asObj().getLong("id")
+    val name = jo.asObj().getStr("name")
+    Assert.assertEquals(id, 1L)
+    Assert.assertEquals(name, "2")
   }
 
   @Test
