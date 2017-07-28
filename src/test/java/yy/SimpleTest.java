@@ -119,14 +119,4 @@ public class SimpleTest {
         Assert.assertEquals(obj.getLong("c").longValue(), -3L);
     }
 
-    @Test
-    public void testScala(){
-        ScalaObj obj = new ScalaObj();
-        obj.id_$eq(1);
-        obj.name_$eq("name");
-        String json = JSON.stringify(obj);
-        ScalaObj o2 = JSON.parse(json, ScalaObj.class);
-        Assert.assertEquals(o2.id().longValue(), 1);
-        Assert.assertEquals(o2.name(), "name");
-    }
 }
