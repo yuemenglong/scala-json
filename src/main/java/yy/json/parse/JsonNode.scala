@@ -113,6 +113,16 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
     s"{$content}"
   }
 
+  override def toJsString(stringifyNull: Boolean): String = {
+    val content = map.toList.filter(p => {
+      stringifyNull || !p._2.isInstanceOf[JsonNull]
+    }).map(p => {
+      val (name, node) = p
+      s""""$name":${node.toJsString(stringifyNull)}"""
+    }).mkString(",")
+    s"{$content}"
+  }
+
   def size(): Int = {
     map.size
   }
@@ -241,6 +251,15 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
       stringifyNull || !node.isInstanceOf[JsonNull]
     }).map(node => {
       s"${node.toString(stringifyNull)}"
+    }).mkString(",")
+    s"[$content]"
+  }
+
+  override def toJsString(stringifyNull: Boolean): String = {
+    val content = array.filter(node => {
+      stringifyNull || !node.isInstanceOf[JsonNull]
+    }).map(node => {
+      s"${node.toJsString(stringifyNull)}"
     }).mkString(",")
     s"[$content]"
   }

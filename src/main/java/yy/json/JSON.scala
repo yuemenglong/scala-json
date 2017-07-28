@@ -23,18 +23,23 @@ object JSON {
   def parse[T](json: String, clazz: Class[T]): T = parse(json).as(clazz)
 
   def convert(obj: Object): JsonNode = {
-    if (obj == null) {
-      new JsonNull
-    } else if (obj.getClass.isArray) {
-      Convert.fromArray(obj)
-    } else {
-      Convert.fromObject(obj)
-    }
+    Convert.fromValueToNode(obj)
+    //    if (obj == null) {
+    //      new JsonNull
+    //    } else if (obj.getClass.isArray) {
+    //      Convert.fromArray(obj)
+    //    } else {
+    //      Convert.fromObject(obj)
+    //    }
   }
 
   def stringify(obj: Object): String = convert(obj).toString
 
   def stringify(obj: Object, stringifyNull: Boolean): String = convert(obj).toString(stringifyNull)
+
+  def stringifyJs(obj: Object): String = convert(obj).toJsString
+
+  def stringifyJs(obj: Object, stringifyNull: Boolean): String = convert(obj).toJsString(stringifyNull)
 
   def walk(node: JsonNode, fn: (JsonNode) => JsonNode): JsonNode = {
     Walk.walk(node, fn)

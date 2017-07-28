@@ -94,7 +94,7 @@ public class SimpleTest {
     public void testGetFieldWhenNull() {
         JsonObj obj = JSON.obj();
         String s = obj.getStr("a");
-        System.out.println(s);
+        Assert.assertEquals(s, null);
     }
 
     @Test
@@ -118,5 +118,6 @@ public class SimpleTest {
         Assert.assertEquals(obj.getLong("b").longValue(), 2L);
         Assert.assertEquals(obj.getLong("c").longValue(), -3L);
     }
+
 
 }
