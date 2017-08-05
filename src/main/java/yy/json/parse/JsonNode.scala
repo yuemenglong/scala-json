@@ -1,6 +1,7 @@
 package yy.json.parse
 
 import yy.json.JSON
+import yy.json.kit.Kit
 
 /**
   * Created by Administrator on 2017/7/5.
@@ -91,7 +92,7 @@ case class JsonDouble(var value: Double) extends JsonValue {
 }
 
 case class JsonStr(var value: String) extends JsonValue {
-  override def toString(stringifyNull: Boolean): String = s""""$value""""
+  override def toString(stringifyNull: Boolean): String = s""""${Kit.escapeString(value)}""""
 
   override def toLong: Long = value.toLong
 
@@ -108,7 +109,7 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
       stringifyNull || !p._2.isInstanceOf[JsonNull]
     }).map(p => {
       val (name, node) = p
-      s""""$name":${node.toString(stringifyNull)}"""
+      s""""${Kit.escapeString(name)}":${node.toString(stringifyNull)}"""
     }).mkString(",")
     s"{$content}"
   }

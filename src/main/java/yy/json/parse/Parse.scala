@@ -29,11 +29,17 @@ object Parse {
   def parseStr(json: String, start: Int): (JsonNode, Int) = {
     var pos = start + 1
     var s = ""
-    var c = json(pos)
-    while (c != '"') {
-      s += c
-      pos += 1
-      c = json(pos)
+    while (json(pos) != '"') {
+      if (json(pos) == '\\' && json(pos + 1) == '"') {
+        s += '"'
+        pos += 2
+      } else if (json(pos) == '\\' && json(pos + 1) == '\\') {
+        s += '\\'
+        pos += 2
+      } else {
+        s += json(pos)
+        pos += 1
+      }
     }
     (JsonStr(s), pos)
   }

@@ -61,4 +61,9 @@ object Kit {
     }
     ret.toArray
   }
+
+  def escapeString(str: String): String = {
+    val ret = """["\\]""".r.replaceAllIn(str, replacer = word => "\\\\" + word.group(0))
+    ret
+  }
 }
