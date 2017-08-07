@@ -7,6 +7,7 @@ import yy.bean.ScalaObj;
 import yy.json.JSON;
 import yy.json.parse.Convert;
 import yy.json.parse.JsonLong;
+import yy.json.parse.JsonNode;
 import yy.json.parse.JsonObj;
 
 /**
@@ -119,5 +120,13 @@ public class SimpleTest {
         Assert.assertEquals(obj.getLong("c").longValue(), -3L);
     }
 
+    @Test
+    public void testEscape() {
+        Obj obj = new Obj();
+        obj.setStringValue("\"name\"");
+        JsonObj jo = JSON.convert(obj).asObj();
+        Assert.assertEquals(jo.getStr("stringValue"), "\"name\"");
+        Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\"name\\\"\"}");
+    }
 
 }
