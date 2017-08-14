@@ -1,7 +1,7 @@
-package yy.json.parse
+package io.github.yuemenglong.json.parse
 
-import yy.json.JSON
-import yy.json.kit.Kit
+import io.github.yuemenglong.json.JSON
+import io.github.yuemenglong.json.kit.Kit
 
 /**
   * Created by Administrator on 2017/7/5.

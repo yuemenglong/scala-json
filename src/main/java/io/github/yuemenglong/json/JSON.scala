@@ -1,6 +1,6 @@
-package yy.json
+package io.github.yuemenglong.json
 
-import yy.json.parse._
+import io.github.yuemenglong.json.parse._
 
 /**
   * Created by Administrator on 2017/7/5.

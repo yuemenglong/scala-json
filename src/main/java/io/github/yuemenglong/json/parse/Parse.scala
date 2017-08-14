@@ -1,4 +1,4 @@
-package yy.json.parse
+package io.github.yuemenglong.json.parse
 
 import scala.collection.mutable.ArrayBuffer
 

@@ -1,8 +1,8 @@
 package yy
 
 import org.junit.{Assert, Test}
-import yy.bean.ScalaObj
-import yy.json.JSON
+import io.github.yuemenglong.bean.ScalaObj
+import io.github.yuemenglong.json.JSON
 import java.lang.Long
 
 

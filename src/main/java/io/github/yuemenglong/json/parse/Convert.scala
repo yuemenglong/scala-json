@@ -1,9 +1,9 @@
-package yy.json.parse
+package io.github.yuemenglong.json.parse
 
 import java.lang
 import java.lang.reflect.{Field, Method}
 
-import yy.json.kit.Kit
+import io.github.yuemenglong.json.kit.Kit
 
 import scala.reflect.ClassTag
 

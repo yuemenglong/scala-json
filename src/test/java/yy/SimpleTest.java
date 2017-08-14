@@ -2,13 +2,13 @@ package yy;
 
 import org.junit.Assert;
 import org.junit.Test;
-import yy.bean.Obj;
-import yy.bean.ScalaObj;
-import yy.json.JSON;
-import yy.json.parse.Convert;
-import yy.json.parse.JsonLong;
-import yy.json.parse.JsonNode;
-import yy.json.parse.JsonObj;
+import io.github.yuemenglong.bean.Obj;
+import io.github.yuemenglong.bean.ScalaObj;
+import io.github.yuemenglong.json.JSON;
+import io.github.yuemenglong.json.parse.Convert;
+import io.github.yuemenglong.json.parse.JsonLong;
+import io.github.yuemenglong.json.parse.JsonNode;
+import io.github.yuemenglong.json.parse.JsonObj;
 
 /**
  * Created by <yuemenglong@126.com> on 2017/7/12.

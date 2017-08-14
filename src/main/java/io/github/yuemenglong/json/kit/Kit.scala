@@ -1,4 +1,4 @@
-package yy.json.kit
+package io.github.yuemenglong.json.kit
 
 import java.lang.reflect.{Field, Method, ParameterizedType}
 

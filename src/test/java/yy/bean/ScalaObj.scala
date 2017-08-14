@@ -1,4 +1,4 @@
-package yy.bean
+package io.github.yuemenglong.bean
 
 /**
   * Created by <yuemenglong@126.com> on 2017/7/26.

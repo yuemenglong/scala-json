@@ -1,4 +1,4 @@
-package yy.bean;
+package io.github.yuemenglong.bean;
 
 import scala.collection.Map;
 

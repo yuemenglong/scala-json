@@ -1,4 +1,4 @@
-package yy.json.parse
+package io.github.yuemenglong.json.parse
 
 /**
   * Created by <yuemenglong@126.com> on 2017/7/14.
