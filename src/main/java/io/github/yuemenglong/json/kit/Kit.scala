@@ -63,7 +63,11 @@ object Kit {
   }
 
   def escapeString(str: String): String = {
-    val ret = """["\\]""".r.replaceAllIn(str, replacer = word => "\\\\" + word.group(0))
-    ret
+    """["\\]""".r.replaceAllIn(str, word => {
+      word.group(0) match {
+        case "\"" => "\\\\\""
+        case "\\" => "\\\\\\\\"
+      }
+    })
   }
 }

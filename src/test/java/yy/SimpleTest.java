@@ -129,4 +129,12 @@ public class SimpleTest {
         Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\"name\\\"\"}");
     }
 
+    @Test
+    public void testEscape2() {
+        Obj obj = new Obj();
+        obj.setStringValue("\\name\\");
+        JsonObj jo = JSON.convert(obj).asObj();
+        Assert.assertEquals(jo.getStr("stringValue"), "\\name\\");
+        Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\\name\\\\\"}");
+    }
 }
