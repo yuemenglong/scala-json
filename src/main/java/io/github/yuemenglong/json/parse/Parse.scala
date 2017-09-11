@@ -77,7 +77,7 @@ object Parse {
           // 特殊情况
           case '}' =>
             state = "finish"
-          case ' ' | '\n' =>
+          case ' ' | '\n' | '\r' =>
             pos += 1
           case '"' =>
             val (n, p) = parseStr(json, pos)
@@ -91,7 +91,7 @@ object Parse {
       if (state == "colon") {
         json(pos) match {
           // 特殊情况
-          case ' ' | '\n' =>
+          case ' ' | '\n' | '\r' =>
             pos += 1
           case ':' =>
             state = "value"
@@ -102,7 +102,7 @@ object Parse {
       //3. get value
       if (state == "value") {
         json(pos) match {
-          case ' ' | '\n' =>
+          case ' ' | '\n' | '\r' =>
             pos += 1
           // 一般情况
           case 'n' =>
@@ -144,7 +144,7 @@ object Parse {
           // 特殊情况
           case '}' =>
             state = "finish"
-          case ' ' | '\n' =>
+          case ' ' | '\n' | '\r' =>
             pos += 1
           case ',' =>
             state = "name"
@@ -168,7 +168,7 @@ object Parse {
           // 特殊情况
           case ']' =>
             state = "finish"
-          case ' ' | '\n' =>
+          case ' ' | '\n' | '\r' =>
             pos += 1
           // 一般情况
           case 'n' =>
@@ -205,7 +205,7 @@ object Parse {
           // 特殊情况
           case ']' =>
             state = "finish"
-          case ' ' | '\n' =>
+          case ' ' | '\n' | '\r' =>
             pos += 1
           case ',' =>
             state = "item"
