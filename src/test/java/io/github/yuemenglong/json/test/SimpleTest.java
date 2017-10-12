@@ -143,7 +143,6 @@ public class SimpleTest {
 
     @Test
     public void testBigDecimalAndDate() throws ParseException {
-        JSON.setDebug(true);
         {
             String s = "{\"bigDecimal\":1.2,\"date\":\"2017-12-12\"}";
             Obj obj = JSON.parse(s, Obj.class);
