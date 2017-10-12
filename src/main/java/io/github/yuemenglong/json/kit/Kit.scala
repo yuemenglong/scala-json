@@ -9,6 +9,8 @@ import scala.collection.mutable.ArrayBuffer
   */
 object Kit {
 
+  var debugFlag = false
+
   def upperCaseFirst(str: String): String = {
     if (str == null) {
       return null
@@ -69,5 +71,11 @@ object Kit {
         case "\\" => "\\\\\\\\"
       }
     })
+  }
+
+  def debug(msg: String): Unit = {
+    if (debugFlag) {
+      println(msg)
+    }
   }
 }

@@ -1,5 +1,6 @@
 package io.github.yuemenglong.json
 
+import io.github.yuemenglong.json.kit.Kit
 import io.github.yuemenglong.json.parse._
 
 /**
@@ -50,4 +51,8 @@ object JSON {
   def arr(): JsonArr = JsonArr(Array())
 
   def setConstructorMap(map: Map[Class[_], () => Object]): Unit = Convert.setConstructorMap(map)
+
+  def setDebug(flag: Boolean): Unit = {
+    Kit.debugFlag = flag
+  }
 }

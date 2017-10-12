@@ -61,7 +61,9 @@ object Convert {
   def toArray(arr: JsonArr, clazz: Class[_]): Array[Object] = {
     val itemClazz = Kit.getArrayType(clazz)
     val ct = ClassTag(itemClazz).asInstanceOf[ClassTag[Object]]
-    arr.array.map(fromNodeToValue(_, itemClazz)).toArray(ct)
+    val array = arr.array.map(fromNodeToValue(_, itemClazz)).toArray(ct)
+    Kit.debug(s"ToArray Return: $array")
+    array
   }
 
   def toMap(obj: JsonObj, clazz: Class[_]): Map[String, Object] = {
@@ -94,7 +96,9 @@ object Convert {
           throw new RuntimeException(s"No Setter Found Of $name")
         }
         method.invoke(ret, value.asInstanceOf[Object])
+        Kit.debug(s"ToObject SetValue: $node, $name, ${field.getType}, $value")
       }
+    Kit.debug(s"ToObject Return: $ret")
     ret.asInstanceOf[Object]
   }
 
@@ -160,7 +164,7 @@ object Convert {
     if (node.isInstanceOf[JsonNull]) {
       return null
     }
-    (clazz, node) match {
+    val ret = (clazz, node) match {
       case (`classOfJavaString` | `classOfScalaString`, v: JsonValue) => v.toStr
       case (`classOfJavaInteger` | `classOfScalaInt`, v: JsonValue) => new lang.Integer(v.toInt)
       case (`classOfJavaLong` | `classOfScalaLong`, v: JsonValue) => new lang.Long(v.toLong)
@@ -178,5 +182,7 @@ object Convert {
       case (_, v: JsonArr) => toArray(v, clazz)
       case _ => throw new RuntimeException(s"Clazz And Node Type Not Match, ${clazz.getName}, ${node.toString}")
     }
+    Kit.debug(s"ToValue Return: $ret")
+    ret
   }
 }
