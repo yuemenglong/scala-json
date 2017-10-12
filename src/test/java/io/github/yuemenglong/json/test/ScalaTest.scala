@@ -1,9 +1,10 @@
-package yy
+package io.github.yuemenglong.json.test
 
-import org.junit.{Assert, Test}
-import io.github.yuemenglong.bean.ScalaObj
-import io.github.yuemenglong.json.JSON
 import java.lang.Long
+
+import io.github.yuemenglong.json.JSON
+import io.github.yuemenglong.json.test.bean.ScalaObj
+import org.junit.{Assert, Test}
 
 
 /**

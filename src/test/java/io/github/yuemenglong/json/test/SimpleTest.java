@@ -1,14 +1,17 @@
-package yy;
+package io.github.yuemenglong.json.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-import io.github.yuemenglong.bean.Obj;
-import io.github.yuemenglong.bean.ScalaObj;
+import io.github.yuemenglong.json.test.bean.Obj;
 import io.github.yuemenglong.json.JSON;
 import io.github.yuemenglong.json.parse.Convert;
 import io.github.yuemenglong.json.parse.JsonLong;
-import io.github.yuemenglong.json.parse.JsonNode;
 import io.github.yuemenglong.json.parse.JsonObj;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by <yuemenglong@126.com> on 2017/7/12.
@@ -136,5 +139,31 @@ public class SimpleTest {
         JsonObj jo = JSON.convert(obj).asObj();
         Assert.assertEquals(jo.getStr("stringValue"), "\\name\\");
         Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\\name\\\\\"}");
+    }
+
+    @Test
+    public void testBigDecimalAndDate() throws ParseException {
+        {
+            String s = "{\"bigDecimal\":1.2,\"date\":\"2017-12-12\"}";
+            Obj obj = JSON.parse(s, Obj.class);
+            Assert.assertEquals(obj.getBigDecimal().doubleValue(), 1.2, 0.0000001);
+            Assert.assertEquals(obj.getDate(),
+                    new SimpleDateFormat("yyyy-MM-dd").parse("2017-12-12"));
+        }
+        {
+            String s = "{\"bigDecimal\":120,\"date\":\"2017-12-12 01:01:01\"}";
+            Obj obj = JSON.parse(s, Obj.class);
+            Assert.assertEquals(obj.getBigDecimal().doubleValue(), 120, 0.00000001);
+            Assert.assertEquals(obj.getDate(),
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .parse("2017-12-12 01:01:01"));
+        }
+        {
+            Obj obj = new Obj();
+            obj.setBigDecimal(new BigDecimal(1.2));
+            obj.setDate(new Date(2017 - 1900, 12 - 1, 12, 14, 14, 14));
+            String json = JSON.stringify(obj);
+            Assert.assertEquals(json, "{\"bigDecimal\":1.2,\"date\":\"2017-12-12 14:14:14\"}");
+        }
     }
 }

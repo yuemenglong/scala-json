@@ -1,6 +1,8 @@
-package io.github.yuemenglong.bean;
+package io.github.yuemenglong.json.test.bean;
 
-import scala.collection.Map;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2017/7/13.
@@ -14,6 +16,8 @@ public class Obj {
     private Object nullValue;
     private Obj objValue;
     private Obj[] objs;
+    private BigDecimal bigDecimal;
+    private Date date;
 
     public Integer getIntValue() {
         return intValue;
@@ -77,5 +81,21 @@ public class Obj {
 
     public void setObjs(Obj[] objs) {
         this.objs = objs;
+    }
+
+    public BigDecimal getBigDecimal() {
+        return bigDecimal;
+    }
+
+    public void setBigDecimal(BigDecimal bigDecimal) {
+        this.bigDecimal = bigDecimal;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

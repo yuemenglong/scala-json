@@ -2,10 +2,14 @@ package io.github.yuemenglong.json.parse
 
 import java.lang
 import java.lang.reflect.{Field, Method}
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.math.BigDecimal
 
 import io.github.yuemenglong.json.kit.Kit
 
 import scala.reflect.ClassTag
+import scala.util.matching.Regex
 
 
 /**
@@ -24,7 +28,13 @@ object Convert {
   val classOfScalaBoolean: Class[Boolean] = classOf[Boolean]
   val classOfScalaString: Class[String] = classOf[String]
 
+  val classOfBigDecimal: Class[BigDecimal] = classOf[BigDecimal]
+  val classOfDate: Class[Date] = classOf[Date]
+
   val classOfJsonNode: Class[JsonNode] = classOf[JsonNode]
+
+  val dateFormat: Regex = """(\d{4})-(\d{2})-(\d{2})""".r
+  val dateTimeFormat: Regex = """(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})""".r
 
   var constructorMap: Map[Class[_], () => Any] = Map[Class[_], () => Any]()
 
@@ -133,6 +143,8 @@ object Convert {
            | `classOfScalaInt` | `classOfScalaLong` | `classOfScalaDouble` => fromNumber(value)
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
       case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
+      case `classOfBigDecimal` => JsonDouble(value.asInstanceOf[BigDecimal].doubleValue())
+      case `classOfDate` => JsonStr(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value.asInstanceOf[Date]))
       case t => if (value.isInstanceOf[Map[_, _]]) {
         fromMap(value)
       } else if (t.isArray) {
@@ -154,9 +166,17 @@ object Convert {
       case (`classOfJavaLong` | `classOfScalaLong`, v: JsonValue) => new lang.Long(v.toLong)
       case (`classOfJavaDouble` | `classOfScalaDouble`, v: JsonValue) => new lang.Double(v.toDouble)
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonBool) => new lang.Boolean(v.value)
+      case (`classOfBigDecimal`, v: JsonValue) => new BigDecimal(v.toStr)
+      case (`classOfDate`, v: JsonValue) => {
+        v.toStr match {
+          case dateFormat(_*) => new SimpleDateFormat("yyyy-MM-dd").parse(v.toStr)
+          case dateTimeFormat(_*) => new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(v.toStr)
+          case _ => throw new RuntimeException(s"Invalid Date Format, ${v.toStr}")
+        }
+      }
       case (_, v: JsonObj) => toObject(v, clazz)
       case (_, v: JsonArr) => toArray(v, clazz)
-      case _ => throw new RuntimeException("Clazz And Node Type Not Match")
+      case _ => throw new RuntimeException(s"Clazz And Node Type Not Match, ${clazz.getName}, ${node.toString}")
     }
   }
 }

@@ -1,4 +1,4 @@
-package io.github.yuemenglong.bean
+package io.github.yuemenglong.json.test.bean
 
 /**
   * Created by <yuemenglong@126.com> on 2017/7/26.
