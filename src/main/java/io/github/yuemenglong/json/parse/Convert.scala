@@ -5,6 +5,7 @@ import java.lang.reflect.{Field, Method}
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.math.BigDecimal
+import java.sql.Timestamp
 
 import io.github.yuemenglong.json.kit.Kit
 
@@ -30,6 +31,7 @@ object Convert {
 
   val classOfBigDecimal: Class[BigDecimal] = classOf[BigDecimal]
   val classOfDate: Class[Date] = classOf[Date]
+  val classOfTimestamp: Class[Timestamp] = classOf[Timestamp]
 
   val classOfJsonNode: Class[JsonNode] = classOf[JsonNode]
 
@@ -148,7 +150,7 @@ object Convert {
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
       case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
       case `classOfBigDecimal` => JsonDouble(value.asInstanceOf[BigDecimal].doubleValue())
-      case `classOfDate` => JsonStr(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value.asInstanceOf[Date]))
+      case `classOfDate` | `classOfTimestamp` => JsonStr(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value.asInstanceOf[Date]))
       case t => if (value.isInstanceOf[Map[_, _]]) {
         fromMap(value)
       } else if (t.isArray) {
@@ -171,7 +173,7 @@ object Convert {
       case (`classOfJavaDouble` | `classOfScalaDouble`, v: JsonValue) => new lang.Double(v.toDouble)
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonBool) => new lang.Boolean(v.value)
       case (`classOfBigDecimal`, v: JsonValue) => new BigDecimal(v.toStr)
-      case (`classOfDate`, v: JsonValue) => {
+      case (`classOfDate` | `classOfTimestamp`, v: JsonValue) => {
         v.toStr match {
           case dateFormat(_*) => new SimpleDateFormat("yyyy-MM-dd").parse(v.toStr)
           case dateTimeFormat(_*) => new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(v.toStr)
