@@ -142,28 +142,36 @@ public class SimpleTest {
     }
 
     @Test
-    public void testBigDecimalAndDate() throws ParseException {
+    public void testBigDecimalAndDateTime() throws ParseException {
         {
-            String s = "{\"bigDecimal\":1.2,\"date\":\"2017-12-12\"}";
+            String s = "{\"bigDecimal\":1.2,\"datetime\":\"2017-12-12\"}";
             Obj obj = JSON.parse(s, Obj.class);
             Assert.assertEquals(obj.getBigDecimal().doubleValue(), 1.2, 0.0000001);
-            Assert.assertEquals(obj.getDate(),
+            Assert.assertEquals(obj.getDatetime(),
                     new SimpleDateFormat("yyyy-MM-dd").parse("2017-12-12"));
         }
         {
-            String s = "{\"bigDecimal\":120,\"date\":\"2017-12-12 01:01:01\"}";
+            String s = "{\"bigDecimal\":120,\"datetime\":\"2017-12-12 01:01:01\"}";
             Obj obj = JSON.parse(s, Obj.class);
             Assert.assertEquals(obj.getBigDecimal().doubleValue(), 120, 0.00000001);
-            Assert.assertEquals(obj.getDate(),
+            Assert.assertEquals(obj.getDatetime(),
                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             .parse("2017-12-12 01:01:01"));
         }
         {
             Obj obj = new Obj();
             obj.setBigDecimal(new BigDecimal(1.2));
-            obj.setDate(new Date(2017 - 1900, 12 - 1, 12, 14, 14, 14));
+            obj.setDatetime(new Date(2017 - 1900, 12 - 1, 12, 14, 14, 14));
             String json = JSON.stringify(obj);
-            Assert.assertEquals(json, "{\"bigDecimal\":1.2,\"date\":\"2017-12-12 14:14:14\"}");
+            Assert.assertEquals(json, "{\"bigDecimal\":1.2,\"datetime\":\"2017-12-12 14:14:14\"}");
         }
+    }
+
+    @Test
+    public void testDate() throws ParseException {
+        Obj obj = new Obj();
+        obj.setDate(new Date(2017 - 1900, 12 - 1, 12, 14, 14, 14));
+        String json = JSON.stringify(obj);
+        Assert.assertEquals(json, "{\"date\":\"2017-12-12\"}");
     }
 }
