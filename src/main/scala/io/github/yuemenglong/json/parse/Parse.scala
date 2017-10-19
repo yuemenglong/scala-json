@@ -36,6 +36,12 @@ object Parse {
       } else if (json(pos) == '\\' && json(pos + 1) == '\\') {
         s += '\\'
         pos += 2
+      } else if (json(pos) == '\\' && json(pos + 1) == 'n') {
+        s += '\n'
+        pos += 2
+      } else if (json(pos) == '\\' && json(pos + 1) == 't') {
+        s += '\t'
+        pos += 2
       } else {
         s += json(pos)
         pos += 1

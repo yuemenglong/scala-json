@@ -3,7 +3,8 @@ package io.github.yuemenglong.json.test
 import java.lang.Long
 
 import io.github.yuemenglong.json.JSON
-import io.github.yuemenglong.json.test.bean.ScalaObj
+import io.github.yuemenglong.json.parse.JsonObj
+import io.github.yuemenglong.json.test.bean.{Obj, ScalaObj}
 import org.junit.{Assert, Test}
 
 
@@ -42,7 +43,7 @@ class ScalaTest {
   @Test
   def testJs(): Unit = {
     {
-      val arr: Array[Long] = Array(1L, 123456789012345L)
+      val arr: Array[Long] = Array(new Long(1L), new Long(123456789012345L))
       val j1 = JSON.stringify(arr)
       val j2 = JSON.stringifyJs(arr)
       Assert.assertEquals(j1, "[1,123456789012345]")
@@ -55,5 +56,30 @@ class ScalaTest {
       Assert.assertEquals(j1, "{\"a\":1,\"b\":123456789012345}")
       Assert.assertEquals(j2, "{\"a\":1,\"b\":\"123456789012345\"}")
     }
+  }
+
+  @Test
+  def testEscape(): Unit = {
+    val obj = new Obj
+
+    {
+      obj.setStringValue("\\name\\")
+      val jo = JSON.convert(obj).asObj()
+      Assert.assertEquals(jo.getStr("stringValue"), "\\name\\")
+      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\\name\\\\\"}")
+    }
+    {
+      obj.setStringValue("\"")
+      val jo = JSON.convert(obj).asObj()
+      Assert.assertEquals(jo.getStr("stringValue"), "\"")
+      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\"\"}")
+    }
+    {
+      obj.setStringValue("1\n2\t3")
+      val jo = JSON.convert(obj).asObj()
+      Assert.assertEquals(jo.getStr("stringValue"), "1\n2\t3")
+      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"1\\n2\\t3\"}")
+    }
+
   }
 }
