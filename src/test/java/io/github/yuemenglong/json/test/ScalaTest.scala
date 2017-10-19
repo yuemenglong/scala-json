@@ -75,11 +75,10 @@ class ScalaTest {
       Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\"\"}")
     }
     {
-      obj.setStringValue("1\n2\t3")
+      obj.setStringValue("1\r\n2\t3")
       val jo = JSON.convert(obj).asObj()
-      Assert.assertEquals(jo.getStr("stringValue"), "1\n2\t3")
-      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"1\\n2\\t3\"}")
+      Assert.assertEquals(jo.getStr("stringValue"), "1\r\n2\t3")
+      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"1\\r\\n2\\t3\"}")
     }
-
   }
 }

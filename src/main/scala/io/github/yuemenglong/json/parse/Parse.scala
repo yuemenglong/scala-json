@@ -1,5 +1,7 @@
 package io.github.yuemenglong.json.parse
 
+import io.github.yuemenglong.json.kit.Kit
+
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -26,21 +28,13 @@ object Parse {
     }
   }
 
+  // 从当前引号到下个引号，引号被吃掉
   def parseStr(json: String, start: Int): (JsonNode, Int) = {
     var pos = start + 1
     var s = ""
     while (json(pos) != '"') {
-      if (json(pos) == '\\' && json(pos + 1) == '"') {
-        s += '"'
-        pos += 2
-      } else if (json(pos) == '\\' && json(pos + 1) == '\\') {
-        s += '\\'
-        pos += 2
-      } else if (json(pos) == '\\' && json(pos + 1) == 'n') {
-        s += '\n'
-        pos += 2
-      } else if (json(pos) == '\\' && json(pos + 1) == 't') {
-        s += '\t'
+      if (json(pos) == '\\') {
+        s += Kit.unescapeString(json(pos + 1))
         pos += 2
       } else {
         s += json(pos)

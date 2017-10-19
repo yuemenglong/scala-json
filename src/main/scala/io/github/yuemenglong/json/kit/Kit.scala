@@ -65,14 +65,25 @@ object Kit {
   }
 
   def escapeString(str: String): String = {
-    """["\\\n\t]""".r.replaceAllIn(str, word => {
+    """["\\\r\n\t]""".r.replaceAllIn(str, word => {
       word.group(0) match {
         case "\"" => "\\\\\""
         case "\\" => "\\\\\\\\"
+        case "\r" => "\\\\r"
         case "\n" => "\\\\n"
         case "\t" => "\\\\t"
       }
     })
+  }
+
+  def unescapeString(c: Char): Char = {
+    c match {
+      case '"' => '"'
+      case '\\' => '\\'
+      case 'r' => '\r'
+      case 'n' => '\n'
+      case 't' => '\t'
+    }
   }
 
   def debug(msg: String): Unit = {
