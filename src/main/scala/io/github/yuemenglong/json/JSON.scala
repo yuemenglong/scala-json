@@ -25,13 +25,10 @@ object JSON {
 
   def convert(obj: Object): JsonNode = {
     Convert.fromValueToNode(obj)
-    //    if (obj == null) {
-    //      new JsonNull
-    //    } else if (obj.getClass.isArray) {
-    //      Convert.fromArray(obj)
-    //    } else {
-    //      Convert.fromObject(obj)
-    //    }
+  }
+
+  def convert[T](node: JsonNode, clazz: Class[T]): T = {
+    node.as(clazz)
   }
 
   def stringify(obj: Object): String = convert(obj).toString
