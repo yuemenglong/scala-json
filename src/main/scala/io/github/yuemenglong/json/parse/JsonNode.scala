@@ -17,11 +17,13 @@ trait AsT {
 
 abstract class JsonNode extends AsT {
   override def as[T](clazz: Class[T]): T = {
-    (this, clazz.isArray) match {
-      case (arr: JsonArr, true) => Convert.toArray(arr, clazz).asInstanceOf[T]
-      case (obj: JsonObj, false) => Convert.toObject(obj, clazz).asInstanceOf[T]
-      case _ => throw new RuntimeException("Type Not Match, Maybe Need Pass Array Class ")
-    }
+    Convert.fromNodeToValue(this, clazz).asInstanceOf[T]
+    //    (this, clazz.isArray) match {
+    //      case (arr: JsonArr, true) => Convert.toArray(arr, clazz).asInstanceOf[T]
+    //      case (obj: JsonObj, false) => Convert.toObject(obj, clazz).asInstanceOf[T]
+    //      case _ => throw new RuntimeException("Type Not Match, Maybe Need Pass Array Class ")
+    //    t
+
   }
 
   override def asObj(): JsonObj = this.asInstanceOf[JsonObj]

@@ -103,5 +103,11 @@ class ScalaTest {
       val json2 = JSON.stringify(arr2)
       Assert.assertEquals(json, json2)
     }
+    {
+      val arr = Array(1, 2, 3)
+      val ja = JSON.parse(JSON.stringify(arr))
+      val i = ja.asArr().array(0).as(classOf[Integer])
+      Assert.assertEquals(i.intValue(), 1)
+    }
   }
 }
