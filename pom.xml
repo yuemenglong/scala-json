@@ -5,7 +5,7 @@
     <!-- <!– The Basics –> -->
     <groupId>io.github.yuemenglong</groupId>
     <artifactId>scala-json</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
     <name>scala-json</name>
     <description>A light weight JSON lib written by scala</description>
