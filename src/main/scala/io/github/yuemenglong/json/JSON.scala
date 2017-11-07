@@ -8,6 +8,13 @@ import io.github.yuemenglong.json.parse._
   */
 object JSON {
 
+  object types {
+    type Integer = java.lang.Integer
+    type Long = java.lang.Long
+    type Double = java.lang.Double
+    type Boolean = java.lang.Boolean
+  }
+
   def parse(json: String): JsonNode = {
     val str = json.trim
     val (node, length) = (str(0), str.last) match {

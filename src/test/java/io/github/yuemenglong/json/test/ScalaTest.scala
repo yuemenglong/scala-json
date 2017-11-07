@@ -1,12 +1,13 @@
 package io.github.yuemenglong.json.test
 
 import java.lang.Long
+import java.util
 
 import io.github.yuemenglong.json.JSON
 import io.github.yuemenglong.json.parse.JsonObj
 import io.github.yuemenglong.json.test.bean.{Obj, ScalaObj}
 import org.junit.{Assert, Test}
-
+import io.github.yuemenglong.json.JSON.types._
 
 /**
   * Created by <yuemenglong@126.com> on 2017/7/28.
@@ -79,6 +80,28 @@ class ScalaTest {
       val jo = JSON.convert(obj).asObj()
       Assert.assertEquals(jo.getStr("stringValue"), "1\r\n2\t3")
       Assert.assertEquals(jo.toString(), "{\"stringValue\":\"1\\r\\n2\\t3\"}")
+    }
+  }
+
+  @Test
+  def testParseToArray(): Unit = {
+    {
+      val arr = Array(1, 2, 3)
+      val json = JSON.stringify(arr)
+      Assert.assertEquals(json, "[1,2,3]")
+      val arr2 = JSON.parse(json, classOf[Array[Long]])
+      Assert.assertEquals(arr2(0).intValue(), 1)
+      Assert.assertEquals(arr2(1).intValue(), 2)
+      Assert.assertEquals(arr2(2).intValue(), 3)
+      val json2 = JSON.stringify(arr2)
+      Assert.assertEquals(json, json2)
+    }
+    {
+      val arr = Array("1", "2", "3")
+      val json = JSON.stringify(arr)
+      val arr2 = JSON.parse(json, classOf[Array[String]])
+      val json2 = JSON.stringify(arr2)
+      Assert.assertEquals(json, json2)
     }
   }
 }

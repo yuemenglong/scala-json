@@ -41,6 +41,14 @@ object Convert {
 
   var constructorMap: Map[Class[_], () => Any] = Map[Class[_], () => Any]()
 
+  implicit def intToObject(x: Int): java.lang.Integer = new java.lang.Integer(x)
+
+  implicit def longToObject(x: Long): java.lang.Long = new java.lang.Long(x)
+
+  implicit def doubleToObject(x: Double): java.lang.Double = new java.lang.Double(x)
+
+  implicit def booleanToObject(x: Boolean): java.lang.Boolean = new java.lang.Boolean(x)
+
   def setConstructorMap(map: Map[Class[_], () => Any]): Unit = {
     constructorMap = map
   }
@@ -131,7 +139,7 @@ object Convert {
   }
 
   def fromArray(value: Object): JsonNode = {
-    val arr = value.asInstanceOf[Array[Object]]
+    val arr = value.asInstanceOf[Array[_]].map(_.asInstanceOf[Object])
     JsonArr(arr.map(fromValueToNode))
   }
 
