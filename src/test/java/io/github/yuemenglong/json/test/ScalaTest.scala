@@ -110,4 +110,12 @@ class ScalaTest {
       Assert.assertEquals(i.intValue(), 1)
     }
   }
+
+  @Test
+  def testPath(): Unit = {
+    val json = """{"aa":[{"bb":1},{"cc":2}]}"""
+    val jo = JSON.parse(json)
+    Assert.assertEquals(jo.path("aa[0].bb").asInt().intValue(), 1)
+    Assert.assertEquals(jo.path("aa[1].bb").asInt(), null)
+  }
 }

@@ -3,6 +3,8 @@ package io.github.yuemenglong.json.parse
 import io.github.yuemenglong.json.JSON
 import io.github.yuemenglong.json.kit.Kit
 
+import scala.util.matching.Regex
+
 /**
   * Created by Administrator on 2017/7/5.
   */
@@ -13,24 +15,69 @@ trait AsT {
   def asObj(): JsonObj
 
   def asArr(): JsonArr
+
+  def asInt(): Integer
+
+  def asStr(): String
+
+  def asLong(): java.lang.Long
+
+  def asDouble(): java.lang.Double
+
+  def asBool(): java.lang.Boolean
 }
 
 abstract class JsonNode extends AsT {
   override def as[T](clazz: Class[T]): T = {
     Convert.fromNodeToValue(this, clazz).asInstanceOf[T]
-    //    (this, clazz.isArray) match {
-    //      case (arr: JsonArr, true) => Convert.toArray(arr, clazz).asInstanceOf[T]
-    //      case (obj: JsonObj, false) => Convert.toObject(obj, clazz).asInstanceOf[T]
-    //      case _ => throw new RuntimeException("Type Not Match, Maybe Need Pass Array Class ")
-    //    t
-
   }
 
   override def asObj(): JsonObj = this.asInstanceOf[JsonObj]
 
   override def asArr(): JsonArr = this.asInstanceOf[JsonArr]
 
+  override def asInt(): Integer = this.as(classOf[Integer])
+
+  override def asStr(): String = this.as(classOf[String])
+
+  override def asLong(): java.lang.Long = this.as(classOf[java.lang.Long])
+
+  override def asDouble(): java.lang.Double = this.as(classOf[java.lang.Double])
+
+  override def asBool(): java.lang.Boolean = this.as(classOf[java.lang.Boolean])
+
   override def toString: String = toString(false)
+
+  def path(path: String): JsonNode = {
+    val re = """(([^.\[\]]+)|(\[\d+]))""".r
+    re.findAllMatchIn(path).foldLeft(this)((node: JsonNode, m: Regex.Match) => {
+      val key = m.group(0)
+      if (node == null || node.isInstanceOf[JsonNull]) {
+        JsonNull()
+      } else if (key.matches("\\[\\d+]")) {
+        val idx = key.slice(1, key.length - 1).toInt
+        if (node.isInstanceOf[JsonArr]) {
+          if (idx >= node.asArr().array.length) {
+            JsonNull()
+          } else {
+            node.asArr().array(idx)
+          }
+        } else {
+          throw new RuntimeException(s"Not Array For Key: $key, ${node.toString}")
+        }
+      } else {
+        if (node.isInstanceOf[JsonObj]) {
+          if (node.asObj().map.contains(key)) {
+            node.asObj().map(key)
+          } else {
+            JsonNull()
+          }
+        } else {
+          throw new RuntimeException(s"Not Object For Key: $key, ${node.toString}")
+        }
+      }
+    })
+  }
 
   def toString(stringifyNull: Boolean): String
 
