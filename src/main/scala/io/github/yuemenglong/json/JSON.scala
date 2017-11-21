@@ -52,7 +52,23 @@ object JSON {
 
   def obj(): JsonObj = JsonObj(Map())
 
+  def obj[T <: JsonNode](map: Map[String, T]): JsonObj = {
+    JsonObj(map.mapValues(_.asInstanceOf[JsonNode]))
+  }
+
   def arr(): JsonArr = JsonArr(Array())
+
+  def arr[T <: JsonNode](arr: Array[T]): JsonArr = {
+    JsonArr(arr.map(_.asInstanceOf[JsonNode]))
+  }
+
+  def int(i: Int): JsonLong = JsonLong(i)
+
+  def long(l: Long): JsonLong = JsonLong(l)
+
+  def double(d: Double): JsonDouble = JsonDouble(d)
+
+  def bool(b: Boolean): JsonBool = JsonBool(b)
 
   def setConstructorMap(map: Map[Class[_], () => Object]): Unit = Convert.setConstructorMap(map)
 
