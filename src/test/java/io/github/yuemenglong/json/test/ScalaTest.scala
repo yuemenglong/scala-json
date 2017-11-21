@@ -4,7 +4,7 @@ import java.lang.Long
 import java.util
 
 import io.github.yuemenglong.json.JSON
-import io.github.yuemenglong.json.parse.JsonObj
+import io.github.yuemenglong.json.parse.{JsonNode, JsonObj}
 import io.github.yuemenglong.json.test.bean.{Obj, ScalaObj}
 import org.junit.{Assert, Test}
 import io.github.yuemenglong.json.JSON.types._
@@ -117,5 +117,12 @@ class ScalaTest {
     val jo = JSON.parse(json)
     Assert.assertEquals(jo.path("aa[0].bb").asInt().intValue(), 1)
     Assert.assertEquals(jo.path("aa[1].bb").asInt(), null)
+  }
+
+  @Test
+  def testMixObjAndJo(): Unit = {
+    val arr = Array[JsonNode](JSON.obj(), JSON.obj())
+    val json = JSON.stringify(arr)
+    Assert.assertEquals(json, "[{},{}]")
   }
 }

@@ -152,8 +152,11 @@ object Convert {
     if (value == null) {
       return JsonNull()
     }
+    //noinspection TypeCheckCanBeMatch
+    if (value.isInstanceOf[JsonNode]) {
+      return value.asInstanceOf[JsonNode]
+    }
     value.getClass match {
-      case `classOfJsonNode` => value.asInstanceOf[JsonNode]
       case `classOfJavaInteger` | `classOfJavaLong` | `classOfJavaDouble`
            | `classOfScalaInt` | `classOfScalaLong` | `classOfScalaDouble` => fromNumber(value)
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
