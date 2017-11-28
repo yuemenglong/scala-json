@@ -125,4 +125,11 @@ class ScalaTest {
     val json = JSON.stringify(arr)
     Assert.assertEquals(json, "[{},{}]")
   }
+
+  @Test
+  def testStringToBool(): Unit = {
+    val json = "{\"booleanValue\":\"true\"}"
+    val b = JSON.parse(json, classOf[Obj]).getBooleanValue.booleanValue()
+    Assert.assertTrue(b)
+  }
 }

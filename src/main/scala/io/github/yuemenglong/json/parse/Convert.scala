@@ -190,6 +190,7 @@ object Convert {
       case (`classOfJavaInteger` | `classOfScalaInt`, v: JsonValue) => new lang.Integer(v.toInt)
       case (`classOfJavaLong` | `classOfScalaLong`, v: JsonValue) => new lang.Long(v.toLong)
       case (`classOfJavaDouble` | `classOfScalaDouble`, v: JsonValue) => new lang.Double(v.toDouble)
+      case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonValue) => new lang.Boolean(v.toBool)
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonBool) => new lang.Boolean(v.value)
       case (`classOfBigDecimal`, v: JsonValue) => new BigDecimal(v.toStr)
       case (`classOfDate` | `classOfTimestamp`, v: JsonValue) => v.toStr match {

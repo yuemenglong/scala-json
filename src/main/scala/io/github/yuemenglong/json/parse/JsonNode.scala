@@ -105,6 +105,8 @@ abstract class JsonValue extends JsonNode {
 
   def toDouble: Double
 
+  def toBool: Boolean
+
   def toStr: String
 }
 
@@ -126,6 +128,11 @@ case class JsonLong(var value: Long) extends JsonValue {
       toString(stringifyNull)
     }
   }
+
+  override def toBool: Boolean = value match {
+    case 0 => false
+    case _ => true
+  }
 }
 
 case class JsonDouble(var value: Double) extends JsonValue {
@@ -138,6 +145,11 @@ case class JsonDouble(var value: Double) extends JsonValue {
   override def toStr: String = toString
 
   override def toInt: Int = value.toInt
+
+  override def toBool: Boolean = value match {
+    case 0 => false
+    case _ => true
+  }
 }
 
 case class JsonStr(var value: String) extends JsonValue {
@@ -150,6 +162,12 @@ case class JsonStr(var value: String) extends JsonValue {
   override def toStr: String = value
 
   override def toInt: Int = value.toInt
+
+  override def toBool: Boolean = value match {
+    case "false" | "0" => false
+    case "true" | "1" => true
+    case _ => throw new RuntimeException("String To Boolean Must Be true/1 Or false/0")
+  }
 }
 
 case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
