@@ -32,6 +32,7 @@ object Convert {
 
   val classOfBigDecimal: Class[BigDecimal] = classOf[BigDecimal]
   val classOfDate: Class[Date] = classOf[Date]
+  val classOfSqlDate: Class[java.sql.Date] = classOf[java.sql.Date]
   val classOfTimestamp: Class[Timestamp] = classOf[Timestamp]
 
   val classOfJsonNode: Class[JsonNode] = classOf[JsonNode]
@@ -162,7 +163,7 @@ object Convert {
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
       case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
       case `classOfBigDecimal` => JsonDouble(value.asInstanceOf[BigDecimal].doubleValue())
-      case `classOfDate` | `classOfTimestamp` => if (field != null && field.getAnnotation(classOf[JsonDate]) != null) {
+      case `classOfDate` | `classOfSqlDate` | `classOfTimestamp` => if (field != null && field.getAnnotation(classOf[JsonDate]) != null) {
         JsonStr(new SimpleDateFormat("yyyy-MM-dd").format(value.asInstanceOf[Date]))
       } else {
         JsonStr(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value.asInstanceOf[Date]))
