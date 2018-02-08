@@ -19,14 +19,20 @@ import scala.util.matching.Regex
   */
 //noinspection LanguageFeature
 object Convert {
+  val classOfJavaByte: Class[lang.Byte] = classOf[lang.Byte]
+  val classOfJavaShort: Class[lang.Short] = classOf[lang.Short]
   val classOfJavaInteger: Class[Integer] = classOf[lang.Integer]
   val classOfJavaLong: Class[lang.Long] = classOf[lang.Long]
+  val classOfJavaFloat: Class[lang.Float] = classOf[lang.Float]
   val classOfJavaDouble: Class[lang.Double] = classOf[lang.Double]
   val classOfJavaBoolean: Class[lang.Boolean] = classOf[lang.Boolean]
   val classOfJavaString: Class[lang.String] = classOf[lang.String]
 
+  val classOfScalaByte: Class[Byte] = classOf[Byte]
+  val classOfScalaShort: Class[Short] = classOf[Short]
   val classOfScalaInt: Class[Int] = classOf[Int]
   val classOfScalaLong: Class[Long] = classOf[Long]
+  val classOfScalaFloat: Class[Float] = classOf[Float]
   val classOfScalaDouble: Class[Double] = classOf[Double]
   val classOfScalaBoolean: Class[Boolean] = classOf[Boolean]
   val classOfScalaString: Class[String] = classOf[String]
@@ -57,17 +63,25 @@ object Convert {
 
   def toNumber(n: JsonValue, clazz: Class[_]): Object = {
     clazz match {
+      case `classOfJavaByte` | `classOfScalaByte` => new lang.Byte(n.toByte)
+      case `classOfJavaShort` | `classOfScalaShort` => new lang.Short(n.toShort)
       case `classOfJavaInteger` | `classOfScalaInt` => new lang.Integer(n.toInt)
       case `classOfJavaLong` | `classOfScalaLong` => new lang.Long(n.toLong)
+      case `classOfJavaFloat` | `classOfScalaFloat` => new lang.Float(n.toFloat)
       case `classOfJavaDouble` | `classOfScalaDouble` => new lang.Double(n.toDouble)
+      case _ => null
     }
   }
 
   def fromNumber(value: Object): JsonValue = {
     value.getClass match {
+      case `classOfJavaByte` | `classOfScalaByte` => JsonLong(value.asInstanceOf[lang.Byte].longValue())
+      case `classOfJavaShort` | `classOfScalaShort` => JsonLong(value.asInstanceOf[lang.Short].longValue())
       case `classOfJavaInteger` | `classOfScalaInt` => JsonLong(value.asInstanceOf[lang.Integer].longValue())
       case `classOfJavaLong` | `classOfScalaLong` => JsonLong(value.asInstanceOf[lang.Long].longValue())
+      case `classOfJavaFloat` | `classOfScalaFloat` => JsonDouble(value.asInstanceOf[lang.Float].doubleValue())
       case `classOfJavaDouble` | `classOfScalaDouble` => JsonDouble(value.asInstanceOf[lang.Double].doubleValue())
+      case _ => null
     }
   }
 
@@ -158,9 +172,11 @@ object Convert {
     if (value.isInstanceOf[JsonNode]) {
       return value.asInstanceOf[JsonNode]
     }
+    val num = fromNumber(value)
+    if (num != null) {
+      return num
+    }
     value.getClass match {
-      case `classOfJavaInteger` | `classOfJavaLong` | `classOfJavaDouble`
-           | `classOfScalaInt` | `classOfScalaLong` | `classOfScalaDouble` => fromNumber(value)
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
       case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
       case `classOfBigDecimal` => JsonDouble(value.asInstanceOf[BigDecimal].doubleValue())
@@ -187,11 +203,18 @@ object Convert {
     if (node.isInstanceOf[JsonNull]) {
       return null
     }
+    val num = node match {
+      case n: JsonValue => toNumber(n, clazz)
+      case _ => null
+    }
+    if (num != null) {
+      return num
+    }
     val ret = (clazz, node) match {
+      //      case (`classOfJavaInteger` | `classOfScalaInt`, v: JsonValue) => new lang.Integer(v.toInt)
+      //      case (`classOfJavaLong` | `classOfScalaLong`, v: JsonValue) => new lang.Long(v.toLong)
+      //      case (`classOfJavaDouble` | `classOfScalaDouble`, v: JsonValue) => new lang.Double(v.toDouble)
       case (`classOfJavaString` | `classOfScalaString`, v: JsonValue) => v.toStr
-      case (`classOfJavaInteger` | `classOfScalaInt`, v: JsonValue) => new lang.Integer(v.toInt)
-      case (`classOfJavaLong` | `classOfScalaLong`, v: JsonValue) => new lang.Long(v.toLong)
-      case (`classOfJavaDouble` | `classOfScalaDouble`, v: JsonValue) => new lang.Double(v.toDouble)
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonValue) => new lang.Boolean(v.toBool)
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonBool) => new lang.Boolean(v.value)
       case (`classOfBigDecimal`, v: JsonValue) => new BigDecimal(v.toStr)

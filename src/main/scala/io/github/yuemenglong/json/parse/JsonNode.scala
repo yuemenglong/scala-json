@@ -97,9 +97,15 @@ case class JsonBool(var value: Boolean) extends JsonNode {
 }
 
 abstract class JsonValue extends JsonNode {
-  def toInt: Int
+  def toByte: Byte = toLong.toByte
+
+  def toShort: Short = toLong.toShort
+
+  def toInt: Int = toLong.toInt
 
   def toLong: Long
+
+  def toFloat: Float = toDouble.toFloat
 
   def toDouble: Double
 
@@ -110,8 +116,6 @@ abstract class JsonValue extends JsonNode {
 
 case class JsonLong(var value: Long) extends JsonValue {
   override def toString(stringifyNull: Boolean): String = s"$value"
-
-  override def toInt: Int = value.toInt
 
   override def toLong: Long = value
 
@@ -142,8 +146,6 @@ case class JsonDouble(var value: Double) extends JsonValue {
 
   override def toStr: String = toString
 
-  override def toInt: Int = value.toInt
-
   override def toBool: Boolean = value match {
     case 0 => false
     case _ => true
@@ -158,8 +160,6 @@ case class JsonStr(var value: String) extends JsonValue {
   override def toDouble: Double = value.toDouble
 
   override def toStr: String = value
-
-  override def toInt: Int = value.toInt
 
   override def toBool: Boolean = value match {
     case "false" | "0" => false
