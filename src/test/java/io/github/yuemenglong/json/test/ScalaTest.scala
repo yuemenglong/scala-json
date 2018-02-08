@@ -132,4 +132,16 @@ class ScalaTest {
     val b = JSON.parse(json, classOf[Obj]).getBooleanValue.booleanValue()
     Assert.assertTrue(b)
   }
+
+  @Test
+  def testPretty(): Unit = {
+    val jo = JSON.obj()
+    jo.setStr("s", "abc")
+    jo.setInt("a", 123)
+    jo.set("arr", JSON.arr(Array(1, 2.3, "s", false, null, JSON.obj(Map("v" -> 1)))))
+    jo.set("obj", JSON.obj(Map("a" -> false)))
+    val exp = "{\n  \"s\": \"abc\",\n  \"a\": 123,\n  \"arr\": [1, 2.3, \"s\", false, null, {\n    \"v\": 1\n  }],\n  \"obj\": {\n    \"a\": false\n  }\n}"
+    val act = JSON.pretty(jo)
+    Assert.assertEquals(act, exp)
+  }
 }

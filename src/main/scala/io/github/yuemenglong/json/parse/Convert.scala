@@ -17,6 +17,7 @@ import scala.util.matching.Regex
 /**
   * Created by Administrator on 2017/7/13.
   */
+//noinspection LanguageFeature
 object Convert {
   val classOfJavaInteger: Class[Integer] = classOf[lang.Integer]
   val classOfJavaLong: Class[lang.Long] = classOf[lang.Long]

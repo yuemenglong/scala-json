@@ -16,6 +16,7 @@ import java.util.Date;
 /**
  * Created by <yuemenglong@126.com> on 2017/7/12.
  */
+@SuppressWarnings("deprecation")
 public class SimpleTest {
     @Test
     public void testConvert() {

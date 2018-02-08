@@ -84,18 +84,16 @@ abstract class JsonNode extends AsT {
   def toJsString: String = toJsString(false)
 
   def toJsString(stringifyNull: Boolean): String = toString(stringifyNull)
+
+  def pretty(indent: Int = 1, tab: Int = 2): String = toString
 }
 
 case class JsonNull() extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = {
-    "null"
-  }
+  override def toString(stringifyNull: Boolean): String = "null"
 }
 
 case class JsonBool(var value: Boolean) extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = {
-    s"$value"
-  }
+  override def toString(stringifyNull: Boolean): String = s"$value"
 }
 
 abstract class JsonValue extends JsonNode {
@@ -179,6 +177,16 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
       s""""${Kit.escapeString(name)}":${node.toString(stringifyNull)}"""
     }).mkString(",")
     s"{$content}"
+  }
+
+  override def pretty(indent: Int, tab: Int): String = {
+    val space = " " * indent * tab
+    val spaceEnd = " " * (indent - 1) * tab
+    val content = map.toList.map(p => {
+      val (name, node) = p
+      s""""${Kit.escapeString(name)}": ${node.pretty(indent + 1, tab)}"""
+    }).mkString(s",\n$space")
+    s"{\n$space$content\n$spaceEnd}"
   }
 
   override def toJsString(stringifyNull: Boolean): String = {
@@ -320,6 +328,13 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
     }).map(node => {
       s"${node.toString(stringifyNull)}"
     }).mkString(",")
+    s"[$content]"
+  }
+
+  override def pretty(indent: Int, tab: Int): String = {
+    val content = array.map(node => {
+      s"${node.pretty(indent, tab)}"
+    }).mkString(", ")
     s"[$content]"
   }
 

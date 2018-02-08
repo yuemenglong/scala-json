@@ -46,20 +46,22 @@ object JSON {
 
   def stringifyJs(obj: Object, stringifyNull: Boolean): String = convert(obj).toJsString(stringifyNull)
 
+  def pretty(obj: Object): String = convert(obj).pretty()
+
   def walk(node: JsonNode, fn: (JsonNode) => JsonNode): JsonNode = {
     Walk.walk(node, fn)
   }
 
   def obj(): JsonObj = JsonObj(Map())
 
-  def obj[T <: JsonNode](map: Map[String, T]): JsonObj = {
-    JsonObj(map.mapValues(_.asInstanceOf[JsonNode]))
+  def obj(map: Map[String, _]): JsonObj = {
+    JsonObj(map.mapValues(o => Convert.fromValueToNode(o.asInstanceOf[Object])))
   }
 
   def arr(): JsonArr = JsonArr(Array())
 
-  def arr[T <: JsonNode](arr: Array[T]): JsonArr = {
-    JsonArr(arr.map(_.asInstanceOf[JsonNode]))
+  def arr(arr: Array[_]): JsonArr = {
+    JsonArr(arr.map(o => Convert.fromValueToNode(o.asInstanceOf[Object])))
   }
 
   def int(i: Int): JsonLong = JsonLong(i)
