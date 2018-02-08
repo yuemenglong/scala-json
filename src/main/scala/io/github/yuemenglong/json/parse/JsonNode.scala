@@ -168,9 +168,13 @@ case class JsonStr(var value: String) extends JsonValue {
   }
 }
 
-case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
+case class JsonObj(var map: Map[String, JsonNode], fields: Array[String] = Array()) extends JsonNode {
+  private def sortedMap = {
+    map.toArray.sortBy { case (f, _) => fields.indexOf(f) }
+  }
+
   override def toString(stringifyNull: Boolean): String = {
-    val content = map.toList.filter(p => {
+    val content = sortedMap.filter(p => {
       stringifyNull || !p._2.isInstanceOf[JsonNull]
     }).map(p => {
       val (name, node) = p
@@ -182,7 +186,7 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
   override def pretty(indent: Int, tab: Int): String = {
     val space = " " * indent * tab
     val spaceEnd = " " * (indent - 1) * tab
-    val content = map.toList.map(p => {
+    val content = sortedMap.map(p => {
       val (name, node) = p
       s""""${Kit.escapeString(name)}": ${node.pretty(indent + 1, tab)}"""
     }).mkString(s",\n$space")
@@ -190,7 +194,7 @@ case class JsonObj(var map: Map[String, JsonNode]) extends JsonNode {
   }
 
   override def toJsString(stringifyNull: Boolean): String = {
-    val content = map.toList.filter(p => {
+    val content = sortedMap.filter(p => {
       stringifyNull || !p._2.isInstanceOf[JsonNull]
     }).map(p => {
       val (name, node) = p

@@ -137,7 +137,7 @@ object Convert {
         val node = fromValueToNode(value, f)
         (name, node)
       })(collection.breakOut)
-    JsonObj(map)
+    JsonObj(map, fields.map(_.getName))
   }
 
   def fromArray(value: Object): JsonNode = {
