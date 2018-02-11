@@ -8,7 +8,7 @@ import java.math.BigDecimal
 import java.sql.Timestamp
 
 import io.github.yuemenglong.json.kit.Kit
-import io.github.yuemenglong.json.lang.JsonDate
+import io.github.yuemenglong.json.lang.{JsonDate, JsonIgnore}
 
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
@@ -103,6 +103,7 @@ object Convert {
     def setMethodNameS(fieldName: String) = s"${fieldName}_$$eq"
 
     val fields: Map[String, Field] = Kit.getDeclaredFields(clazz)
+      .filter(f => f.getAnnotation(classOf[JsonIgnore]) == null)
       .map(f => (f.getName, f))(collection.breakOut)
     val methods: Map[String, Method] = Kit.getDeclaredMethod(clazz)
       .map(m => (m.getName, m))(collection.breakOut)
@@ -135,6 +136,7 @@ object Convert {
     def getMethodNameS(fieldName: String) = fieldName
 
     val fields: Array[Field] = Kit.getDeclaredFields(obj.getClass)
+      .filter(f => f.getAnnotation(classOf[JsonIgnore]) == null)
     val methods: Map[String, Method] = Kit.getDeclaredMethod(obj.getClass)
       .map(m => (m.getName, m))(collection.breakOut)
     val map: Map[String, JsonNode] = fields
@@ -211,9 +213,6 @@ object Convert {
       return num
     }
     val ret = (clazz, node) match {
-      //      case (`classOfJavaInteger` | `classOfScalaInt`, v: JsonValue) => new lang.Integer(v.toInt)
-      //      case (`classOfJavaLong` | `classOfScalaLong`, v: JsonValue) => new lang.Long(v.toLong)
-      //      case (`classOfJavaDouble` | `classOfScalaDouble`, v: JsonValue) => new lang.Double(v.toDouble)
       case (`classOfJavaString` | `classOfScalaString`, v: JsonValue) => v.toStr
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonValue) => new lang.Boolean(v.toBool)
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonBool) => new lang.Boolean(v.value)

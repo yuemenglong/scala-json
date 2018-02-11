@@ -30,6 +30,8 @@ object JSON {
 
   def parse[T](json: String, clazz: Class[T]): T = parse(json).as(clazz)
 
+  def parse[T](clazz: Class[T], json: String): T = parse(json, clazz)
+
   def convert(obj: Object): JsonNode = {
     Convert.fromValueToNode(obj)
   }

@@ -144,4 +144,21 @@ class ScalaTest {
     val act = JSON.pretty(jo)
     Assert.assertEquals(act, exp)
   }
+
+  @Test
+  def testIgnore(): Unit = {
+    {
+      val obj = new ScalaObj
+      obj.ign = "ign"
+      val json = JSON.stringify(obj)
+      Assert.assertEquals(json, """{"map":{}}""")
+    }
+
+    {
+      val json = """{"ign":"ign"}"""
+      val obj = JSON.parse(classOf[ScalaObj], json)
+      Assert.assertNull(obj.ign)
+    }
+
+  }
 }
