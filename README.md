@@ -25,6 +25,10 @@ pom文件加入
 
 ## 常用接口
 def stringify(obj: Object): String //将对象转为JSON
+
 def stringifyJs(obj: Object): String //将对象转为JSON，其中较大的long字段转为string类型，避免js因number类型精度问题丢失数据
+
 def parse[T](json: String, clazz: Class[T]): T //将json字符串转为对象
+
 def convert(obj: Object): JsonNode // 将json字符串转为JsonNode对象，可以在JsonNode上对字段进行增删改查操作
+
