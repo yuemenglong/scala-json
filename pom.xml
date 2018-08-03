@@ -5,7 +5,7 @@
     <!-- <!– The Basics –> -->
     <groupId>io.github.yuemenglong</groupId>
     <artifactId>scala-json</artifactId>
-    <version>1.0.7</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <name>scala-json</name>
     <description>A light weight JSON lib written by scala</description>
@@ -28,7 +28,7 @@
         <url>git@github.com:yuemenglong/scala-json.git</url>
     </scm>
     <properties>
-        <scala.version>2.12.2</scala.version>
+        <scala.version>2.11.12</scala.version>
     </properties>
     <dependencies>
         <dependency>
@@ -134,7 +134,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.0.0-M1</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -148,7 +147,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>

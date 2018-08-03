@@ -102,27 +102,27 @@ public class SimpleTest {
         Assert.assertEquals(s, null);
     }
 
-    @Test
-    public void testWalk() {
-        JsonObj obj = JSON.obj();
-        obj.setLong("a", 1L);
-        obj.setLong("b", 2L);
-        obj.setLong("c", 3L);
-        obj = JSON.walk(obj, (node) -> {
-            if (!(node instanceof JsonLong)) {
-                return node;
-            }
-            JsonLong n = (JsonLong) node;
-            if (n.value() == 3) {
-                return new JsonLong(-3);
-            } else {
-                return node;
-            }
-        }).asObj();
-        Assert.assertEquals(obj.getLong("a").longValue(), 1L);
-        Assert.assertEquals(obj.getLong("b").longValue(), 2L);
-        Assert.assertEquals(obj.getLong("c").longValue(), -3L);
-    }
+//    @Test
+//    public void testWalk() {
+//        JsonObj obj = JSON.obj();
+//        obj.setLong("a", 1L);
+//        obj.setLong("b", 2L);
+//        obj.setLong("c", 3L);
+//        obj = JSON.walk(obj, (node) -> {
+//            if (!(node instanceof JsonLong)) {
+//                return node;
+//            }
+//            JsonLong n = (JsonLong) node;
+//            if (n.value() == 3) {
+//                return new JsonLong(-3);
+//            } else {
+//                return node;
+//            }
+//        }).asObj();
+//        Assert.assertEquals(obj.getLong("a").longValue(), 1L);
+//        Assert.assertEquals(obj.getLong("b").longValue(), 2L);
+//        Assert.assertEquals(obj.getLong("c").longValue(), -3L);
+//    }
 
     @Test
     public void testEscape() {

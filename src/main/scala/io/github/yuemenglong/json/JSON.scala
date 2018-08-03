@@ -50,7 +50,7 @@ object JSON {
 
   def pretty(obj: Object): String = convert(obj).pretty()
 
-  def walk(node: JsonNode, fn: (JsonNode) => JsonNode): JsonNode = {
+  def walk(node: JsonNode, fn: JsonNode => JsonNode): JsonNode = {
     Walk.walk(node, fn)
   }
 
