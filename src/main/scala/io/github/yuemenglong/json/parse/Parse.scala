@@ -31,17 +31,17 @@ object Parse {
   // 从当前引号到下个引号，引号被吃掉
   def parseStr(json: String, start: Int): (JsonNode, Int) = {
     var pos = start + 1
-    var s = ""
+    val sb = new StringBuilder
     while (json(pos) != '"') {
       if (json(pos) == '\\') {
-        s += Kit.unescapeString(json(pos + 1))
+        sb.append(Kit.unescapeString(json(pos + 1)))
         pos += 2
       } else {
-        s += json(pos)
+        sb.append(json(pos))
         pos += 1
       }
     }
-    (JsonStr(s), pos)
+    (JsonStr(sb.toString()), pos)
   }
 
   def parseNum(json: String, start: Int): (JsonNode, Int) = {
