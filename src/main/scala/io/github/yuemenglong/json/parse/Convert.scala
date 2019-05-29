@@ -2,13 +2,13 @@ package io.github.yuemenglong.json.parse
 
 import java.lang
 import java.lang.reflect.{Field, Method}
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.math.BigDecimal
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Date
 
 import io.github.yuemenglong.json.kit.Kit
-import io.github.yuemenglong.json.lang.{JsonDate, JsonIgnore}
+import io.github.yuemenglong.json.lang.JsonDate
 
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
@@ -102,11 +102,8 @@ object Convert {
 
     def setMethodNameS(fieldName: String) = s"${fieldName}_$$eq"
 
-    val fields: Map[String, Field] = Kit.getDeclaredFields(clazz)
-      .filter(f => f.getAnnotation(classOf[JsonIgnore]) == null)
-      .map(f => (f.getName, f))(collection.breakOut)
-    val methods: Map[String, Method] = Kit.getDeclaredMethod(clazz)
-      .map(m => (m.getName, m))(collection.breakOut)
+    val fields: Map[String, Field] = Kit.getValidFieldMap(clazz)
+    val methods: Map[String, Method] = Kit.getValidMethodMap(clazz)
     val ret = if (constructorMap.contains(clazz)) {
       constructorMap(clazz)()
     } else {
@@ -135,10 +132,8 @@ object Convert {
 
     def getMethodNameS(fieldName: String) = fieldName
 
-    val fields: Array[Field] = Kit.getDeclaredFields(obj.getClass)
-      .filter(f => f.getAnnotation(classOf[JsonIgnore]) == null)
-    val methods: Map[String, Method] = Kit.getDeclaredMethod(obj.getClass)
-      .map(m => (m.getName, m))(collection.breakOut)
+    val fields: Array[Field] = Kit.getValidFields(obj.getClass)
+    val methods: Map[String, Method] = Kit.getValidMethodMap(obj.getClass)
     val map: Map[String, JsonNode] = fields
       .filter(f => methods.contains(getMethodNameJ(f.getName)) || methods.contains(f.getName))
       .map(f => {
