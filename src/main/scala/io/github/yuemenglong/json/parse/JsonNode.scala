@@ -48,6 +48,18 @@ abstract class JsonNode extends AsT {
 
   override def toString: String = toString(false)
 
+  def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit
+
+  def toString(stringifyNull: Boolean): String = {
+    val sb = new StringBuilder
+    buildString(sb, stringifyNull)
+    sb.toString()
+  }
+
+  def toJsString: String = toJsString(false)
+
+  def toJsString(stringifyNull: Boolean): String = toString(stringifyNull)
+
   def path(path: String): JsonNode = {
     val re = """(([^.\[\]]+)|(\[\d+]))""".r
     re.findAllMatchIn(path).foldLeft(this)((node: JsonNode, m: Regex.Match) => {
@@ -79,21 +91,15 @@ abstract class JsonNode extends AsT {
     })
   }
 
-  def toString(stringifyNull: Boolean): String
-
-  def toJsString: String = toJsString(false)
-
-  def toJsString(stringifyNull: Boolean): String = toString(stringifyNull)
-
   def pretty(indent: Int = 1, tab: Int = 2): String = toString
 }
 
 case class JsonNull() extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = "null"
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append("null")
 }
 
 case class JsonBool(var value: Boolean) extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = s"$value"
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append(s"$value")
 }
 
 abstract class JsonValue extends JsonNode {
@@ -115,7 +121,7 @@ abstract class JsonValue extends JsonNode {
 }
 
 case class JsonLong(var value: Long) extends JsonValue {
-  override def toString(stringifyNull: Boolean): String = s"$value"
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append(s"$value")
 
   override def toLong: Long = value
 
@@ -138,7 +144,7 @@ case class JsonLong(var value: Long) extends JsonValue {
 }
 
 case class JsonDouble(var value: Double) extends JsonValue {
-  override def toString(stringifyNull: Boolean): String = s"$value"
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append(s"$value")
 
   override def toLong: Long = value.toLong
 
@@ -153,7 +159,7 @@ case class JsonDouble(var value: Double) extends JsonValue {
 }
 
 case class JsonStr(var value: String) extends JsonValue {
-  override def toString(stringifyNull: Boolean): String = s""""${Kit.escapeString(value)}""""
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append(s""""${Kit.escapeString(value)}"""")
 
   override def toLong: Long = value.toLong
 
@@ -173,14 +179,23 @@ case class JsonObj(var map: Map[String, JsonNode], fields: Array[String] = Array
     map.toArray.sortBy { case (f, _) => fields.indexOf(f) }
   }
 
-  override def toString(stringifyNull: Boolean): String = {
-    val content = sortedMap.filter(p => {
-      stringifyNull || !p._2.isInstanceOf[JsonNull]
-    }).map(p => {
-      val (name, node) = p
-      s""""${Kit.escapeString(name)}":${node.toString(stringifyNull)}"""
-    }).mkString(",")
-    s"{$content}"
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = {
+    sb.append("{")
+    sortedMap.filter { case (_, node) =>
+      stringifyNull || !node.isInstanceOf[JsonNull]
+    }.zipWithIndex.foreach { case ((name, node), i) =>
+      if (i > 0) {
+        sb.append(",")
+      }
+      sb.append(s""""${Kit.escapeString(name)}":""")
+      node.buildString(sb, stringifyNull)
+    }
+    //    }.map(p => {
+    //      val (name, node) = p
+    //      s""""${Kit.escapeString(name)}":${node.toString(stringifyNull)}"""
+    //    }).mkString(",")
+    sb.append("}")
+    //    s"{$content}"
   }
 
   override def pretty(indent: Int, tab: Int): String = {
@@ -326,13 +341,21 @@ case class JsonObj(var map: Map[String, JsonNode], fields: Array[String] = Array
 }
 
 case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = {
-    val content = array.filter(node => {
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = {
+    sb.append("[")
+    array.filter(node => {
       stringifyNull || !node.isInstanceOf[JsonNull]
-    }).map(node => {
-      s"${node.toString(stringifyNull)}"
-    }).mkString(",")
-    s"[$content]"
+    }).zipWithIndex.foreach { case (node, i) =>
+      if (i > 0) {
+        sb.append(",")
+      }
+      node.buildString(sb, stringifyNull)
+    }
+    //      .map(node => {
+    //      s"${node.toString(stringifyNull)}"
+    //    }).mkString(",")
+    sb.append("]")
+    //    s"[$content]"
   }
 
   override def pretty(indent: Int, tab: Int): String = {
@@ -466,7 +489,5 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
 }
 
 case class JsonPlain(var value: String) extends JsonNode {
-  override def toString(stringifyNull: Boolean): String = {
-    value
-  }
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append(value)
 }
