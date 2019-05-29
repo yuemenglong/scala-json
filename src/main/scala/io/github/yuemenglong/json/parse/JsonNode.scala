@@ -50,6 +50,8 @@ abstract class JsonNode extends AsT {
 
   def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit
 
+  def buildJsString(sb: StringBuilder, stringifyNull: Boolean): Unit = buildString(sb, stringifyNull)
+
   def toString(stringifyNull: Boolean): String = {
     val sb = new StringBuilder
     buildString(sb, stringifyNull)
@@ -58,7 +60,11 @@ abstract class JsonNode extends AsT {
 
   def toJsString: String = toJsString(false)
 
-  def toJsString(stringifyNull: Boolean): String = toString(stringifyNull)
+  def toJsString(stringifyNull: Boolean): String = {
+    val sb = new StringBuilder
+    buildJsString(sb, stringifyNull)
+    sb.toString()
+  }
 
   def path(path: String): JsonNode = {
     val re = """(([^.\[\]]+)|(\[\d+]))""".r
@@ -121,19 +127,19 @@ abstract class JsonValue extends JsonNode {
 }
 
 case class JsonLong(var value: Long) extends JsonValue {
-  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append(s"$value")
-
   override def toLong: Long = value
 
   override def toDouble: Double = value.toDouble
 
   override def toStr: String = toString
 
-  override def toJsString(stringifyNull: Boolean): String = {
+  override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = sb.append(s"$value")
+
+  override def buildJsString(sb: StringBuilder, stringifyNull: Boolean): Unit = {
     if (value > Integer.MAX_VALUE) {
-      s""""$value""""
+      sb.append(s""""$value"""")
     } else {
-      toString(stringifyNull)
+      buildString(sb, stringifyNull)
     }
   }
 
@@ -190,12 +196,21 @@ case class JsonObj(var map: Map[String, JsonNode], fields: Array[String] = Array
       sb.append(s""""${Kit.escapeString(name)}":""")
       node.buildString(sb, stringifyNull)
     }
-    //    }.map(p => {
-    //      val (name, node) = p
-    //      s""""${Kit.escapeString(name)}":${node.toString(stringifyNull)}"""
-    //    }).mkString(",")
     sb.append("}")
-    //    s"{$content}"
+  }
+
+  override def buildJsString(sb: StringBuilder, stringifyNull: Boolean): Unit = {
+    sb.append("{")
+    sortedMap.filter { case (_, node) =>
+      stringifyNull || !node.isInstanceOf[JsonNull]
+    }.zipWithIndex.foreach { case ((name, node), i) =>
+      if (i > 0) {
+        sb.append(",")
+      }
+      sb.append(s""""${Kit.escapeString(name)}":""")
+      node.buildJsString(sb, stringifyNull)
+    }
+    sb.append("}")
   }
 
   override def pretty(indent: Int, tab: Int): String = {
@@ -206,16 +221,6 @@ case class JsonObj(var map: Map[String, JsonNode], fields: Array[String] = Array
       s""""${Kit.escapeString(name)}": ${node.pretty(indent + 1, tab)}"""
     }).mkString(s",\n$space")
     s"{\n$space$content\n$spaceEnd}"
-  }
-
-  override def toJsString(stringifyNull: Boolean): String = {
-    val content = sortedMap.filter(p => {
-      stringifyNull || !p._2.isInstanceOf[JsonNull]
-    }).map(p => {
-      val (name, node) = p
-      s""""$name":${node.toJsString(stringifyNull)}"""
-    }).mkString(",")
-    s"{$content}"
   }
 
   def size(): Int = {
@@ -351,26 +356,26 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
       }
       node.buildString(sb, stringifyNull)
     }
-    //      .map(node => {
-    //      s"${node.toString(stringifyNull)}"
-    //    }).mkString(",")
     sb.append("]")
-    //    s"[$content]"
+  }
+
+  override def buildJsString(sb: StringBuilder, stringifyNull: Boolean): Unit = {
+    sb.append("[")
+    array.filter(node => {
+      stringifyNull || !node.isInstanceOf[JsonNull]
+    }).zipWithIndex.foreach { case (node, i) =>
+      if (i > 0) {
+        sb.append(",")
+      }
+      node.buildJsString(sb, stringifyNull)
+    }
+    sb.append("]")
   }
 
   override def pretty(indent: Int, tab: Int): String = {
     val content = array.map(node => {
       s"${node.pretty(indent, tab)}"
     }).mkString(", ")
-    s"[$content]"
-  }
-
-  override def toJsString(stringifyNull: Boolean): String = {
-    val content = array.filter(node => {
-      stringifyNull || !node.isInstanceOf[JsonNull]
-    }).map(node => {
-      s"${node.toJsString(stringifyNull)}"
-    }).mkString(",")
     s"[$content]"
   }
 
