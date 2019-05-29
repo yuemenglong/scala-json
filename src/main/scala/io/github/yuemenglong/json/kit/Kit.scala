@@ -1,7 +1,9 @@
 package io.github.yuemenglong.json.kit
 
 import java.lang.reflect.{Field, Method, ParameterizedType}
+import java.util.concurrent.ConcurrentHashMap
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -42,7 +44,13 @@ object Kit {
     params(0).asInstanceOf[Class[_]]
   }
 
+  private val fieldCache: ConcurrentHashMap[Class[_], Array[Field]] = new ConcurrentHashMap[Class[_], Array[Field]]()
+  private val methodCache: ConcurrentHashMap[Class[_], Array[Method]] = new ConcurrentHashMap[Class[_], Array[Method]]()
+
   def getDeclaredFields(clazz: Class[_]): Array[Field] = {
+    if (fieldCache.contains(clazz)) {
+      return fieldCache.get(clazz)
+    }
     val ret = new ArrayBuffer[Field]()
     clazz.getDeclaredFields.foreach(ret += _)
     var parent = clazz.getSuperclass
@@ -50,10 +58,14 @@ object Kit {
       parent.getDeclaredFields.foreach(ret += _)
       parent = parent.getSuperclass
     }
-    ret.toArray
+    fieldCache.put(clazz, ret.toArray)
+    fieldCache.get(clazz)
   }
 
   def getDeclaredMethod(clazz: Class[_]): Array[Method] = {
+    if (methodCache.contains(clazz)) {
+      return methodCache.get(clazz)
+    }
     val ret = new ArrayBuffer[Method]()
     clazz.getDeclaredMethods.foreach(ret += _)
     var parent = clazz.getSuperclass
@@ -61,7 +73,8 @@ object Kit {
       parent.getDeclaredMethods.foreach(ret += _)
       parent = parent.getSuperclass
     }
-    ret.toArray
+    methodCache.put(clazz, ret.toArray)
+    methodCache.get(clazz)
   }
 
   def escapeString(str: String): String = {
