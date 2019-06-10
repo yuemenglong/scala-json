@@ -1,10 +1,6 @@
 package io.github.yuemenglong.json.test.bean;
 
-
-import io.github.yuemenglong.json.lang.JsonDate;
-
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Created by Administrator on 2017/7/13.
@@ -19,9 +15,8 @@ public class Obj {
     private Obj objValue;
     private Obj[] objs;
     private BigDecimal bigDecimal;
-    private Date datetime;
-    @JsonDate
-    private Date date;
+    private java.sql.Date date;
+    private java.sql.Timestamp datetime;
 
     public Integer getIntValue() {
         return intValue;
@@ -95,19 +90,19 @@ public class Obj {
         this.bigDecimal = bigDecimal;
     }
 
-    public Date getDatetime() {
+    public java.sql.Timestamp getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(Date datetime) {
+    public void setDatetime(java.sql.Timestamp datetime) {
         this.datetime = datetime;
     }
 
-    public Date getDate() {
+    public java.sql.Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(java.sql.Date date) {
         this.date = date;
     }
 }

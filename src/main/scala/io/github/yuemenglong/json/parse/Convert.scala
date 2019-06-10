@@ -3,12 +3,10 @@ package io.github.yuemenglong.json.parse
 import java.lang
 import java.lang.reflect.{Field, Method}
 import java.math.BigDecimal
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 
 import io.github.yuemenglong.json.kit.Kit
-import io.github.yuemenglong.json.lang.JsonDate
 
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
@@ -40,7 +38,7 @@ object Convert {
   val classOfBigDecimal: Class[BigDecimal] = classOf[BigDecimal]
   val classOfDate: Class[Date] = classOf[Date]
   val classOfSqlDate: Class[java.sql.Date] = classOf[java.sql.Date]
-  val classOfTimestamp: Class[Timestamp] = classOf[Timestamp]
+  val classOfTimestamp: Class[java.sql.Timestamp] = classOf[java.sql.Timestamp]
 
   val classOfJsonNode: Class[JsonNode] = classOf[JsonNode]
 
@@ -177,11 +175,8 @@ object Convert {
       case `classOfJavaString` | `classOfScalaString` => JsonStr(value.asInstanceOf[lang.String])
       case `classOfJavaBoolean` | `classOfScalaBoolean` => JsonBool(value.asInstanceOf[lang.Boolean])
       case `classOfBigDecimal` => JsonDouble(value.asInstanceOf[BigDecimal].doubleValue())
-      case `classOfDate` | `classOfSqlDate` | `classOfTimestamp` => if (field != null && field.getAnnotation(classOf[JsonDate]) != null) {
-        JsonStr(new SimpleDateFormat("yyyy-MM-dd").format(value.asInstanceOf[Date]))
-      } else {
-        JsonStr(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value.asInstanceOf[Date]))
-      }
+      case `classOfDate` | `classOfTimestamp` => JsonStr(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value.asInstanceOf[Date]))
+      case `classOfSqlDate` => JsonStr(new SimpleDateFormat("yyyy-MM-dd").format(value.asInstanceOf[Date]))
       case t => if (value.isInstanceOf[Map[_, _]]) {
         fromMap(value)
       } else if (t.isArray) {
@@ -212,11 +207,17 @@ object Convert {
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonValue) => new lang.Boolean(v.toBool)
       case (`classOfJavaBoolean` | `classOfScalaBoolean`, v: JsonBool) => new lang.Boolean(v.value)
       case (`classOfBigDecimal`, v: JsonValue) => new BigDecimal(v.toStr)
-      case (`classOfDate` | `classOfTimestamp`, v: JsonValue) => v.toStr match {
-        case dateFormat(_*) => new SimpleDateFormat("yyyy-MM-dd").parse(v.toStr)
-        case dateTimeFormat(_*) => new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(v.toStr)
-        case _ => throw new RuntimeException(s"Invalid Date Format, ${v.toStr}")
-      }
+      case (`classOfDate` | `classOfSqlDate` | `classOfTimestamp`, v: JsonValue) =>
+        val dateValue = v.toStr match {
+          case dateFormat(_*) => new SimpleDateFormat("yyyy-MM-dd").parse(v.toStr)
+          case dateTimeFormat(_*) => new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(v.toStr)
+          case _ => throw new RuntimeException(s"Invalid Date Format, ${v.toStr}")
+        }
+        clazz match {
+          case `classOfDate` => dateValue
+          case `classOfSqlDate` => new java.sql.Date(dateValue.getTime)
+          case `classOfTimestamp` => new java.sql.Timestamp(dateValue.getTime)
+        }
       case (_, v: JsonObj) => toObject(v, clazz)
       case (_, v: JsonArr) => toArray(v, clazz)
       case _ => throw new RuntimeException(s"Clazz And Node Type Not Match, ${clazz.getName}, ${node.toString}")
