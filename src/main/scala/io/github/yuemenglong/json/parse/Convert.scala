@@ -87,7 +87,6 @@ object Convert {
     val itemClazz = Kit.getArrayType(clazz)
     val ct = ClassTag(itemClazz).asInstanceOf[ClassTag[Object]]
     val array = arr.array.map(fromNodeToValue(_, itemClazz)).toArray(ct)
-    Kit.debug(s"ToArray Return: $array")
     array
   }
 
@@ -119,9 +118,7 @@ object Convert {
           throw new RuntimeException(s"No Setter Found Of $name")
         }
         method.invoke(ret, value.asInstanceOf[Object])
-        Kit.debug(s"ToObject SetValue: $node, $name, ${field.getType}, $value")
       }
-    Kit.debug(s"ToObject Return: $ret")
     ret.asInstanceOf[Object]
   }
 
@@ -222,7 +219,6 @@ object Convert {
       case (_, v: JsonArr) => toArray(v, clazz)
       case _ => throw new RuntimeException(s"Clazz And Node Type Not Match, ${clazz.getName}, ${node.toString}")
     }
-    Kit.debug(s"ToValue Return: $ret")
     ret
   }
 }

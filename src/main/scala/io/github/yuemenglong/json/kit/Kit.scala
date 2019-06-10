@@ -132,10 +132,4 @@ object Kit {
       case 't' => '\t'
     }
   }
-
-  def debug(msg: String): Unit = {
-    if (debugFlag) {
-      println(msg)
-    }
-  }
 }
