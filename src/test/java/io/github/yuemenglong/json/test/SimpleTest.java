@@ -5,7 +5,6 @@ import org.junit.Test;
 import io.github.yuemenglong.json.test.bean.Obj;
 import io.github.yuemenglong.json.JSON;
 import io.github.yuemenglong.json.parse.Convert;
-import io.github.yuemenglong.json.parse.JsonLong;
 import io.github.yuemenglong.json.parse.JsonObj;
 
 import java.math.BigDecimal;
@@ -16,7 +15,7 @@ import java.util.Date;
 /**
  * Created by <yuemenglong@126.com> on 2017/7/12.
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "MagicConstant"})
 public class SimpleTest {
     @Test
     public void testConvert() {
@@ -99,7 +98,7 @@ public class SimpleTest {
     public void testGetFieldWhenNull() {
         JsonObj obj = JSON.obj();
         String s = obj.getStr("a");
-        Assert.assertEquals(s, null);
+        Assert.assertNull(s);
     }
 
 //    @Test
@@ -169,7 +168,7 @@ public class SimpleTest {
     }
 
     @Test
-    public void testDate() throws ParseException {
+    public void testDate() {
         Obj obj = new Obj();
         obj.setDate(new java.sql.Date(new Date(2017 - 1900, 12 - 1, 12, 14, 14, 14).getTime()));
         String json = JSON.stringify(obj);
