@@ -4,8 +4,8 @@ import io.github.yuemenglong.json.kit.Kit
 import io.github.yuemenglong.json.parse._
 
 /**
-  * Created by Administrator on 2017/7/5.
-  */
+ * Created by Administrator on 2017/7/5.
+ */
 object JSON {
 
   object types {
@@ -14,6 +14,8 @@ object JSON {
     type Double = java.lang.Double
     type Boolean = java.lang.Boolean
   }
+
+  var defaultStringifyNull = true
 
   def parse(json: String): JsonNode = {
     val str = json.trim

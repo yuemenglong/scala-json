@@ -46,7 +46,7 @@ abstract class JsonNode extends AsT {
 
   override def asBool(): java.lang.Boolean = this.as(classOf[java.lang.Boolean])
 
-  override def toString: String = toString(false)
+  override def toString: String = toString(JSON.defaultStringifyNull)
 
   def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit
 
@@ -58,7 +58,7 @@ abstract class JsonNode extends AsT {
     sb.toString()
   }
 
-  def toJsString: String = toJsString(false)
+  def toJsString: String = toJsString(JSON.defaultStringifyNull)
 
   def toJsString(stringifyNull: Boolean): String = {
     val sb = new StringBuilder
