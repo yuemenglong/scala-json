@@ -15,7 +15,11 @@ object JSON {
     type Boolean = java.lang.Boolean
   }
 
-  var defaultStringifyNull = true
+  private[json] var defaultStringifyNull = true
+
+  def setStringifyNull(value: Boolean): Unit = {
+    defaultStringifyNull = value
+  }
 
   def parse(json: String): JsonNode = {
     val str = json.trim
@@ -78,7 +82,7 @@ object JSON {
 
   def setConstructorMap(map: Map[Class[_], () => Object]): Unit = Convert.setConstructorMap(map)
 
-  def setDebug(flag: Boolean): Unit = {
-    Kit.debugFlag = flag
+  def setDebug(value: Boolean): Unit = {
+    Kit.debugLog = value
   }
 }

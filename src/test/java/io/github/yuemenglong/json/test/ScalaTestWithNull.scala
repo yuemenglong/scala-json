@@ -1,22 +1,15 @@
 package io.github.yuemenglong.json.test
 
-import java.lang.Long
-import java.util
-
 import io.github.yuemenglong.json.JSON
-import io.github.yuemenglong.json.parse.{JsonNode, JsonObj}
+import io.github.yuemenglong.json.JSON.types._
+import io.github.yuemenglong.json.parse.JsonNode
 import io.github.yuemenglong.json.test.bean.{Obj, ScalaObj}
 import org.junit.{Assert, Before, Test}
-import io.github.yuemenglong.json.JSON.types._
 
 /**
  * Created by <yuemenglong@126.com> on 2017/7/28.
  */
-class ScalaTest {
-  @Before
-  def before(): Unit = {
-    JSON.setStringifyNull(false)
-  }
+class ScalaTestWithNull {
 
   @Test
   def testGetterAndSetter(): Unit = {
@@ -71,19 +64,55 @@ class ScalaTest {
       obj.setStringValue("\\name\\")
       val jo = JSON.convert(obj).asObj()
       Assert.assertEquals(jo.getStr("stringValue"), "\\name\\")
-      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\\name\\\\\"}")
+      Assert.assertEquals(jo.toString(),
+        """{"intValue":null,
+          |"longValue":null,
+          |"doubleValue":null,
+          |"stringValue":"\\name\\",
+          |"booleanValue":null,
+          |"nullValue":null,
+          |"objValue":null,
+          |"objs":null,
+          |"bigDecimal":null,
+          |"date":null,
+          |"datetime":null}
+          |""".stripMargin.replace("\r\n", ""))
     }
     {
       obj.setStringValue("\"")
       val jo = JSON.convert(obj).asObj()
       Assert.assertEquals(jo.getStr("stringValue"), "\"")
-      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"\\\"\"}")
+      Assert.assertEquals(jo.toString(),
+        """{"intValue":null,
+          |"longValue":null,
+          |"doubleValue":null,
+          |"stringValue":"\"",
+          |"booleanValue":null,
+          |"nullValue":null,
+          |"objValue":null,
+          |"objs":null,
+          |"bigDecimal":null,
+          |"date":null,
+          |"datetime":null}
+          |""".stripMargin.replace("\r\n", ""))
     }
     {
       obj.setStringValue("1\r\n2\t3")
       val jo = JSON.convert(obj).asObj()
       Assert.assertEquals(jo.getStr("stringValue"), "1\r\n2\t3")
-      Assert.assertEquals(jo.toString(), "{\"stringValue\":\"1\\r\\n2\\t3\"}")
+      Assert.assertEquals(jo.toString(),
+        """{"intValue":null,
+          |"longValue":null,
+          |"doubleValue":null,
+          |"stringValue":"1\r\n2\t3",
+          |"booleanValue":null,
+          |"nullValue":null,
+          |"objValue":null,
+          |"objs":null,
+          |"bigDecimal":null,
+          |"date":null,
+          |"datetime":null}
+          |""".stripMargin.replace("\r\n", ""))
     }
   }
 
@@ -155,7 +184,7 @@ class ScalaTest {
       val obj = new ScalaObj
       obj.ign = "ign"
       val json = JSON.stringify(obj)
-      Assert.assertEquals(json, """{"map":{}}""")
+      Assert.assertEquals(json, """{"id":null,"name":null,"map":{}}""")
     }
 
     {

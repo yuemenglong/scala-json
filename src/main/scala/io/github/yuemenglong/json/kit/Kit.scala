@@ -13,7 +13,7 @@ import scala.collection.mutable.ArrayBuffer
   */
 object Kit {
 
-  var debugFlag = false
+  var debugLog = false
 
   def upperCaseFirst(str: String): String = {
     if (str == null) {

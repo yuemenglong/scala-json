@@ -1,6 +1,7 @@
 package io.github.yuemenglong.json.test;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import io.github.yuemenglong.json.test.bean.Obj;
 import io.github.yuemenglong.json.JSON;
@@ -17,6 +18,11 @@ import java.util.Date;
  */
 @SuppressWarnings({"deprecation", "MagicConstant"})
 public class SimpleTest {
+    @Before
+    public void before() {
+        JSON.setStringifyNull(false);
+    }
+
     @Test
     public void testConvert() {
         Obj obj = new Obj();
