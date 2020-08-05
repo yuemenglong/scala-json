@@ -9,8 +9,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
-  * Created by Administrator on 2017/7/5.
-  */
+ * Created by Administrator on 2017/7/5.
+ */
 object Kit {
 
   var debugLog = false
@@ -28,6 +28,11 @@ object Kit {
   def getArrayType(clazz: Class[_]): Class[_] = {
     if (!clazz.isArray) {
       return clazz
+    }
+    // 这里必须是对象，不处理原生类型
+    // 处理多维数组的特殊情况
+    if (clazz.getName.startsWith("[[")) {
+      return Class.forName(clazz.getName.substring(1))
     }
     val name = clazz.getName.replaceAll("(^\\[L)|(;$)", "")
     Class.forName(name)
