@@ -5,8 +5,8 @@ import io.github.yuemenglong.json.kit.Kit
 import scala.collection.mutable.ArrayBuffer
 
 /**
-  * Created by Administrator on 2017/7/5.
-  */
+ * Created by Administrator on 2017/7/5.
+ */
 object Parse {
 
   def parseNull(json: String, start: Int): (JsonNode, Int) = {
@@ -29,10 +29,10 @@ object Parse {
   }
 
   // 从当前引号到下个引号，引号被吃掉
-  def parseStr(json: String, start: Int): (JsonNode, Int) = {
+  def parseStr(json: String, start: Int, quote: Char): (JsonNode, Int) = {
     var pos = start + 1
     val sb = new StringBuilder
-    while (json(pos) != '"') {
+    while (json(pos) != quote) {
       if (json(pos) == '\\') {
         sb.append(Kit.unescapeString(json(pos + 1)))
         pos += 2
@@ -79,8 +79,8 @@ object Parse {
             state = "finish"
           case ' ' | '\n' | '\r' | '\t' =>
             pos += 1
-          case '"' =>
-            val (n, p) = parseStr(json, pos)
+          case '"' | ''' =>
+            val (n, p) = parseStr(json, pos, json(pos))
             state = "colon"
             name = n.asInstanceOf[JsonStr].value
             pos = p + 1
@@ -120,8 +120,8 @@ object Parse {
             map += (name -> n)
             state = "dot"
             pos = p + 1
-          case '"' =>
-            val (n, p) = parseStr(json, pos)
+          case '"' | ''' =>
+            val (n, p) = parseStr(json, pos, json(pos))
             map += (name -> n)
             state = "dot"
             pos = p + 1
@@ -181,8 +181,8 @@ object Parse {
             arr += n
             state = "dot"
             pos = p + 1
-          case '"' =>
-            var (n, p) = parseStr(json, pos)
+          case '"' | ''' =>
+            var (n, p) = parseStr(json, pos, json(pos))
             arr += n
             state = "dot"
             pos = p + 1

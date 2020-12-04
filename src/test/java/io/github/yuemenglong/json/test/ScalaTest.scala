@@ -163,7 +163,18 @@ class ScalaTest {
       val obj = JSON.parse(classOf[ScalaObj], json)
       Assert.assertNull(obj.ign)
     }
+  }
 
+  @Test
+  def testArrayArray(): Unit = {
+    val arr: Array[Array[Double]] = Array(Array(1.1, 2.2), Array(3.3, 4.4))
+    val json = JSON.stringifyJs(arr)
+    val arr2: Array[Array[Double]] = JSON.parse(json, classOf[Array[Array[Double]]])
+    arr.zip(arr2).foreach { case (a1, a2) =>
+      a1.zip(a2).foreach { case (a, b) =>
+        Assert.assertEquals(a, b)
+      }
+    }
   }
 
   @Test
