@@ -165,4 +165,11 @@ class ScalaTest {
     }
 
   }
+
+  @Test
+  def testMap2(): Unit = {
+    val json = """{"ign":"ign"}"""
+    val map: Map[String, String] = JSON.parse(json).asObj().map.mapValues(_.asStr())
+    Assert.assertEquals(map("ign"), "ign")
+  }
 }
