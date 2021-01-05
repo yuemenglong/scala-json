@@ -34,8 +34,8 @@ object Parse {
     val sb = new StringBuilder
     while (json(pos) != quote) {
       if (json(pos) == '\\') {
-        sb.append(Kit.unescapeString(json(pos + 1)))
-        pos += 2
+        pos = Kit.unescapeString(sb, json, pos)
+        pos += 1
       } else {
         sb.append(json(pos))
         pos += 1

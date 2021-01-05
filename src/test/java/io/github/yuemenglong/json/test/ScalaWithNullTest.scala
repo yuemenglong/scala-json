@@ -196,6 +196,15 @@ class ScalaWithNullTest {
       val obj = JSON.parse(classOf[ScalaObj], json)
       Assert.assertNull(obj.ign)
     }
+  }
 
+  @Test
+  def testUnescapeCN(): Unit = {
+    val expected = Array("起点", "\r", "\n", "\"", "\t")
+    val js = """{"v":["\u8d77\u70b9","\r","\n","\"","\t"]}"""
+    val jo = JSON.parse(js)
+    jo.asObj().getArr("v").zip(expected).foreach { case (node, s) =>
+      Assert.assertEquals(node.asStr(), s)
+    }
   }
 }

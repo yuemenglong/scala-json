@@ -2,6 +2,7 @@ package io.github.yuemenglong.json.kit
 
 import java.lang.reflect.{Field, Method, ParameterizedType}
 import java.util.concurrent.ConcurrentHashMap
+import java.util.regex.Pattern
 
 import io.github.yuemenglong.json.lang.JsonIgnore
 
@@ -76,14 +77,6 @@ object Kit {
     ret
   }
 
-  //  {
-  //    val fields: Map[String, Field] = Kit.getDeclaredFields(clazz)
-  //      .filter(f => f.getAnnotation(classOf[JsonIgnore]) == null)
-  //      .map(f => (f.getName, f))(collection.breakOut)
-  //    val methods: Map[String, Method] = Kit.getDeclaredMethod(clazz)
-  //      .map(m => (m.getName, m))(collection.breakOut)
-  //  }
-
   def getValidFields(clazz: Class[_]): Array[Field] = {
     if (fieldCache.contains(clazz)) {
       return fieldCache.get(clazz)
@@ -128,13 +121,43 @@ object Kit {
     })
   }
 
-  def unescapeString(c: Char): Char = {
-    c match {
-      case '"' => '"'
-      case '\\' => '\\'
-      case 'r' => '\r'
-      case 'n' => '\n'
-      case 't' => '\t'
+  val re: Pattern = Pattern.compile("[0-9|a-fA-F]{4}")
+
+  // 返回处理到的pos位置
+  def unescapeString(sb: StringBuilder, json: String, pos: Int): Int = {
+    json(pos + 1) match {
+      case '"' =>
+        sb.append('"')
+        pos + 1
+      case '\\' =>
+        sb.append('\\')
+        pos + 1
+      case 'r' =>
+        sb.append('\r')
+        pos + 1
+      case 'n' =>
+        sb.append('\n')
+        pos + 1
+      case 't' =>
+        sb.append('\t')
+        pos + 1
+      case 'u' =>
+        if (json.length >= pos + 6) {
+          val sub = json.substring(pos + 2, pos + 6)
+          if (re.matcher(sub).matches()) {
+            sb.append(Integer.parseInt(sub, 16).toChar)
+            pos + 5
+          } else {
+            sb.append("\\u")
+            pos + 1
+          }
+        } else {
+          sb.append("\\u")
+          pos + 1
+        }
+      case c =>
+        sb.append("\\").append(c)
+        pos + 1
     }
   }
 }
