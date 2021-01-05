@@ -9,7 +9,11 @@ import org.junit.{Assert, Before, Test}
 /**
  * Created by <yuemenglong@126.com> on 2017/7/28.
  */
-class ScalaTestWithNull {
+class ScalaWithNullTest {
+  @Before
+  def before(): Unit = {
+    JSON.setStringifyNull(true)
+  }
 
   @Test
   def testGetterAndSetter(): Unit = {
