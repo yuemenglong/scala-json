@@ -6,8 +6,8 @@ import io.github.yuemenglong.json.kit.Kit
 import scala.util.matching.Regex
 
 /**
-  * Created by Administrator on 2017/7/5.
-  */
+ * Created by Administrator on 2017/7/5.
+ */
 
 trait AsT {
   def as[T](clazz: Class[T]): T
@@ -27,7 +27,7 @@ trait AsT {
   def asBool(): java.lang.Boolean
 }
 
-abstract class JsonNode extends AsT {
+trait JsonNode extends AsT {
   override def as[T](clazz: Class[T]): T = {
     Convert.fromNodeToValue(this, clazz).asInstanceOf[T]
   }
@@ -345,7 +345,7 @@ case class JsonObj(var map: Map[String, JsonNode], fields: Array[String] = Array
   }
 }
 
-case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
+case class JsonArr(var array: Array[JsonNode]) extends Iterable[JsonNode] with JsonNode {
   override def buildString(sb: StringBuilder, stringifyNull: Boolean): Unit = {
     sb.append("[")
     array.filter(node => {
@@ -490,6 +490,20 @@ case class JsonArr(var array: Array[JsonNode]) extends JsonNode {
       return null
     }
     array(idx).asInstanceOf[JsonArr]
+  }
+
+  override def iterator: Iterator[JsonNode] = {
+    val that = this
+    new Iterator[JsonNode] {
+      var pos = 0
+
+      override def hasNext: Boolean = pos < that.length()
+
+      override def next(): JsonNode = {
+        pos += 1
+        that.get(pos - 1)
+      }
+    }
   }
 }
 
