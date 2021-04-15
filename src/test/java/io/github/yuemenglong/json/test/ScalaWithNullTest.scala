@@ -79,7 +79,8 @@ class ScalaWithNullTest {
           |"objs":null,
           |"bigDecimal":null,
           |"date":null,
-          |"datetime":null}
+          |"datetime":null,
+          |"te":null}
           |""".stripMargin.replace("\r\n", ""))
     }
     {
@@ -97,7 +98,8 @@ class ScalaWithNullTest {
           |"objs":null,
           |"bigDecimal":null,
           |"date":null,
-          |"datetime":null}
+          |"datetime":null,
+          |"te":null}
           |""".stripMargin.replace("\r\n", ""))
     }
     {
@@ -115,7 +117,8 @@ class ScalaWithNullTest {
           |"objs":null,
           |"bigDecimal":null,
           |"date":null,
-          |"datetime":null}
+          |"datetime":null,
+          |"te":null}
           |""".stripMargin.replace("\r\n", ""))
     }
   }
@@ -188,7 +191,7 @@ class ScalaWithNullTest {
       val obj = new ScalaObj
       obj.ign = "ign"
       val json = JSON.stringify(obj)
-      Assert.assertEquals(json, """{"id":null,"name":null,"map":{}}""")
+      Assert.assertEquals(json, """{"id":null,"name":null,"map":{},"te":null}""")
     }
 
     {

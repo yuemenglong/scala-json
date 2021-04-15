@@ -5,7 +5,7 @@ import java.util
 
 import io.github.yuemenglong.json.JSON
 import io.github.yuemenglong.json.parse.{JsonNode, JsonObj}
-import io.github.yuemenglong.json.test.bean.{Obj, ScalaObj}
+import io.github.yuemenglong.json.test.bean.{Obj, ScalaObj, TestEnum}
 import org.junit.{Assert, Before, Test}
 import io.github.yuemenglong.json.JSON.types._
 
@@ -182,5 +182,25 @@ class ScalaTest {
     val json = """{"ign":"ign"}"""
     val map: Map[String, String] = JSON.parse(json).asObj().map.mapValues(_.asStr())
     Assert.assertEquals(map("ign"), "ign")
+  }
+
+  @Test
+  def testEnum(): Unit = {
+    val obj = new Obj
+    obj.setTe(TestEnum.A)
+    val json = JSON.stringifyJs(obj)
+    Assert.assertEquals(json, """{"te":"A"}""")
+
+    val obj2 = JSON.parse(json, classOf[Obj])
+    Assert.assertEquals(obj2.getTe, TestEnum.A)
+
+    val so = new ScalaObj
+    so.map = null
+    so.te = TestEnum.B
+    val json2 = JSON.stringifyJs(so)
+    Assert.assertEquals(json2, """{"te":"B"}""")
+
+    val so2 = JSON.parse(json2, classOf[ScalaObj])
+    Assert.assertEquals(so2.te, TestEnum.B)
   }
 }

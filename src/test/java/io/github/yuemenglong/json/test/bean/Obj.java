@@ -17,6 +17,7 @@ public class Obj {
     private BigDecimal bigDecimal;
     private java.sql.Date date;
     private java.sql.Timestamp datetime;
+    private TestEnum te;
 
     public Integer getIntValue() {
         return intValue;
@@ -104,5 +105,13 @@ public class Obj {
 
     public void setDate(java.sql.Date date) {
         this.date = date;
+    }
+
+    public TestEnum getTe() {
+        return te;
+    }
+
+    public void setTe(TestEnum te) {
+        this.te = te;
     }
 }

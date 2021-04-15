@@ -13,8 +13,8 @@ import scala.util.matching.Regex
 
 
 /**
-  * Created by Administrator on 2017/7/13.
-  */
+ * Created by Administrator on 2017/7/13.
+ */
 //noinspection LanguageFeature
 object Convert {
   val classOfJavaByte: Class[lang.Byte] = classOf[lang.Byte]
@@ -164,6 +164,9 @@ object Convert {
     if (value.isInstanceOf[JsonNode]) {
       return value.asInstanceOf[JsonNode]
     }
+    if (value.getClass.isEnum) {
+      return JsonStr(String.valueOf(value))
+    }
     val num = fromNumber(value)
     if (num != null) {
       return num
@@ -191,6 +194,9 @@ object Convert {
   def fromNodeToValue(node: JsonNode, clazz: Class[_]): Object = {
     if (node.isInstanceOf[JsonNull]) {
       return null
+    }
+    if (clazz.isEnum) {
+      return clazz.getDeclaredMethod("valueOf", classOf[String]).invoke(null, node.asInstanceOf[JsonValue].toStr)
     }
     val num = node match {
       case n: JsonValue => toNumber(n, clazz)
